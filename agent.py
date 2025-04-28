@@ -100,7 +100,16 @@ class Agent(object):
         #   - compute policy gradient loss function given actions and returns
         #   - compute gradients and step the optimizer
         #
-
+        rewards_scontate = discount_rewards(rewards, self.gamma) # calcolo reward scontate
+        rewards_scontate_norm = (rewards_scontate-rewards_scontate.mean())/(rewards_scontate.std()+ 1e-8)
+        
+        policy_loss = -torch.sum(action_log_probs*rewards_scontate_norm)
+        
+        self.optimizer.zero_grad() #mette a 0 per ogni inizio ciclo
+        policy_loss.backward() #calcola automaticamente i gradienti
+        self.optimizer.step() 
+        #i gradienti sono la direzione, fare backward() significa scegliere in che direzione 
+        # del grafo dell'optimizer prendere.ALLA CASSA
 
         #
         # TASK 3:

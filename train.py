@@ -13,7 +13,7 @@ from agent import Agent, Policy
 def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument('--n-episodes', default=100000, type=int, help='Number of training episodes')
-    parser.add_argument('--print-every', default=20000, type=int, help='Print info every <> episodes')
+    parser.add_argument('--print-every', default=100, type=int, help='Print info every <> episodes')
     parser.add_argument('--device', default='cpu', type=str, help='network device [cpu, cuda]')
 
     return parser.parse_args()
@@ -45,6 +45,7 @@ def main():
     #
 
 	for episode in range(args.n_episodes):
+		#print("Episode: ", episode)
 		done = False
 		train_reward = 0
 		state = env.reset()  # Reset the environment and observe the initial state
@@ -59,9 +60,11 @@ def main():
 			agent.store_outcome(previous_state, state, action_probabilities, reward, done)
 
 			train_reward += reward
+
+		agent.update_policy() ##### AGGIUNTA IO #######################
 		
 		if (episode+1)%args.print_every == 0:
-			print('Training episode:', episode)
+			print('Training episode:', episode+1)
 			print('Episode return:', train_reward)
 
 
