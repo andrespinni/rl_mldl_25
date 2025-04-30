@@ -101,6 +101,10 @@ class Agent(object):
         #   - compute gradients and step the optimizer
         #
         rewards_scontate = discount_rewards(rewards, self.gamma) # calcolo reward scontate
+        
+        baseline =20
+        rewards_scontate = rewards_scontate - 20
+        
         rewards_scontate_norm = (rewards_scontate-rewards_scontate.mean())/(rewards_scontate.std()+ 1e-8)
         
         policy_loss = -torch.sum(action_log_probs*rewards_scontate_norm)
