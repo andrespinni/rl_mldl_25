@@ -15,6 +15,8 @@ def parse_args():
     parser.add_argument('--device', default='cpu', type=str, help='network device [cpu, cuda]')
     parser.add_argument('--render', default=False, action='store_true', help='Render the simulator')
     parser.add_argument('--episodes', default=1000, type=int, help='Number of test episodes')
+    parser.add_argument('--name', default='hopper-test_noName', type=str, help='Scegliere nome')
+
 
     return parser.parse_args()
 
@@ -27,7 +29,7 @@ def main():
 	# env = gym.make('CustomHopper-target-v0')
  
 	wandb.init(
-    project="hopper-test",  # Scegli un nome adatto
+    project=args.name, 
     config={
         "env": "CustomHopper-source-v0",
         "model_path": args.model,
