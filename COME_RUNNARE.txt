@@ -1,0 +1,6 @@
+train
+python train.py --name METTI_NOME
+
+
+test
+python test.py --model NOME_DI_PRIMA/model.mdl --render/NULLA --name NOME_DI_PRIMA
