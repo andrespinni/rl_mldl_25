@@ -9,10 +9,12 @@ import gym
 from env.custom_hopper import *
 from agent import Agent, Policy
 
+import wandb
+
 
 def parse_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--n-episodes', default=100000, type=int, help='Number of training episodes')
+    parser.add_argument('--n-episodes', default=1000, type=int, help='Number of training episodes')
     parser.add_argument('--print-every', default=100, type=int, help='Print info every <> episodes')
     parser.add_argument('--device', default='cpu', type=str, help='network device [cpu, cuda]')
 
@@ -25,6 +27,18 @@ def main():
 
 	env = gym.make('CustomHopper-source-v0')
 	# env = gym.make('CustomHopper-target-v0')
+ 
+	wandb.init(
+    project="hopper-train",
+    config={
+        "env": "CustomHopper-source-v0",
+        "n_episodes": args.n_episodes,
+        "print_every": args.print_every,
+        "device": args.device,
+        "algorithm": "REINFORCE"  # Puoi personalizzare
+    	}
+	)
+
 
 	print('Action space:', env.action_space)
 	print('State space:', env.observation_space)
@@ -62,6 +76,9 @@ def main():
 			train_reward += reward
 
 		agent.update_policy() ##### AGGIUNTA IO #######################
+
+		wandb.log({"episode": episode + 1, "train_reward": train_reward})
+
 		
 		if (episode+1)%args.print_every == 0:
 			print('Training episode:', episode+1)
@@ -69,6 +86,10 @@ def main():
 
 
 	torch.save(agent.policy.state_dict(), "model.mdl")
+ 
+	wandb.save("model.mdl")
+	wandb.finish()
+
 
 	
 
