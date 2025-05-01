@@ -151,3 +151,5 @@ class Agent(object):
         self.rewards.append(torch.Tensor([reward]))
         self.done.append(done)
 
+        #VAI
+
