@@ -114,6 +114,7 @@ class Agent(object):
         self.optimizer.step() 
         #i gradienti sono la direzione, fare backward() significa scegliere in che direzione 
         # del grafo dell'optimizer prendere.ALLA CASSA
+        #VAAAAAAAAIIII
 
         #
         # TASK 3:
