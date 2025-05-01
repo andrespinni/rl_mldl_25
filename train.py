@@ -77,15 +77,22 @@ def main():
             train_reward += reward
 
         agent.update_policy()
+        
+        
 
         wandb.log({"episode": episode + 1, "train_reward": train_reward})
+        wandb.log({"episode": episode + 1, "policy_loss": agent.pol_loss})
+        
 
         if (episode + 1) % args.print_every == 0:
             print('Training episode:', episode + 1)
             print('Episode return:', train_reward)
+            print("Policy loss:", agent.pol_loss)
             
             out_file.write(f"Training episode: {episode+1}\n")
             out_file.write(f"Episode return: {train_reward}\n")
+            out_file.write(f"Policy loss: {agent.pol_loss}\n")
+
 
     torch.save(agent.policy.state_dict(), f"{args.name}/model.mdl")
 

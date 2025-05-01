@@ -109,6 +109,8 @@ class Agent(object):
         
         policy_loss = -torch.sum(action_log_probs*rewards_scontate_norm)
         
+        self.pol_loss = policy_loss
+        
         self.optimizer.zero_grad() #mette a 0 per ogni inizio ciclo
         policy_loss.backward() #calcola automaticamente i gradienti
         self.optimizer.step() 
