@@ -114,7 +114,6 @@ class Agent(object):
         self.optimizer.step() 
         #i gradienti sono la direzione, fare backward() significa scegliere in che direzione 
         # del grafo dell'optimizer prendere.ALLA CASSA
-        #VAAAAAAAAIIII
 
         #
         # TASK 3:
@@ -151,6 +150,3 @@ class Agent(object):
         self.action_log_probs.append(action_log_prob)
         self.rewards.append(torch.Tensor([reward]))
         self.done.append(done)
-
-        #VAI
-
