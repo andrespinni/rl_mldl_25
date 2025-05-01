@@ -100,7 +100,8 @@ class Agent(object):
         #   - compute policy gradient loss function given actions and returns
         #   - compute gradients and step the optimizer
         #
-
+        #VAAAAAAAAIIII
+        print("VAAAAAI")
 
         #
         # TASK 3:
