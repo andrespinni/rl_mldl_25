@@ -22,6 +22,8 @@ def parse_args():
 args = parse_args()
 
 def main():
+    
+    os.makedirs(args.name, exist_ok=True)
     out_file_name = f"{args.name}/output_test.txt"
     out_file = open(out_file_name, "w")  # Corretto: aggiunta modalità "w"
 
@@ -29,7 +31,8 @@ def main():
     # env = gym.make('CustomHopper-target-v0')
 
     wandb.init(
-        project=args.name,
+        project="test",
+        name=args.name,
         config={
             "env": "CustomHopper-source-v0",
             "model_path": args.model,
