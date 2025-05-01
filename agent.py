@@ -123,6 +123,10 @@ class Agent(object):
         #   - compute gradients and step the optimizer
         #
 
+
+
+        # VAI VAIIII
+
         return        
 
 
