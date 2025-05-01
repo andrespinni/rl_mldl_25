@@ -88,7 +88,7 @@ def main():
     torch.save(agent.policy.state_dict(), f"{args.name}/model.mdl")
 
     artifact = wandb.Artifact('model', type='model')
-    artifact.add_file('model.mdl')
+    artifact.add_file(f'{args.name}/model.mdl')
     wandb.log_artifact(artifact)
 
     wandb.finish()
