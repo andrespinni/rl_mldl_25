@@ -16,7 +16,7 @@ import os
 def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument('--episodes', default=100000, type=int, help='Number of training episodes')
-    parser.add_argument('--print-every', default=100, type=int, help='Print info every <> episodes')
+    parser.add_argument('--print-every', default=10000, type=int, help='Print info every <> episodes')
     parser.add_argument('--device', default='cpu', type=str, help='network device [cpu, cuda]')
     parser.add_argument('--name', default='hopper-train_noName', type=str, help='Scegliere nome')
 
