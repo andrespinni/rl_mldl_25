@@ -33,6 +33,7 @@ def main():
     wandb.init(
         project="test",
         name=args.name,
+        entity="andrea-gaudino02-politecnico-di-torino",
         config={
             "env": "CustomHopper-source-v0",
             "model_path": args.model,
