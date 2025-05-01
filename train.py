@@ -35,7 +35,9 @@ def main():
     # env = gym.make('CustomHopper-target-v0')
 
     wandb.init(
-        project=args.name,
+        project="train",
+        name=args.name,
+        entity="andrea-gaudino02-politecnico-di-torino",
         config={
             "env": "CustomHopper-source-v0",
             "episodes": args.episodes,
