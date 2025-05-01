@@ -38,7 +38,11 @@ class Policy(torch.nn.Module):
             Critic network
         """
         # TASK 3: critic network for actor-critic algorithm
+        self.fc1_critic = torch.nn.Linear(state_space, self.hidden)
+        self.fc2_critic = torch.nn.Linear(self.hidden, self.hidden)
+        self.fc3_critic_value = torch.nn.Linear(self.hidden, 1)
 
+        # La dimensione finale dell'ultimo layer è 1 perché il critic network stima il valore scalare della funzione di valore dello stato V_w(s)
 
         self.init_weights()
 
@@ -67,8 +71,11 @@ class Policy(torch.nn.Module):
         """
         # TASK 3: forward in the critic network
 
-        
-        return normal_dist
+        x_critic = self.tanh(self.fc1_critic(x))
+        x_critic = self.tanh(self.fc2_critic(x_critic))
+        state_value = self.fc3_critic(x_critic)
+
+        return normal_dist, state_value
 
 
 class Agent(object):
@@ -92,30 +99,7 @@ class Agent(object):
         rewards = torch.stack(self.rewards, dim=0).to(self.train_device).squeeze(-1)
         done = torch.Tensor(self.done).to(self.train_device)
 
-        self.states, self.next_states, self.action_log_probs, self.rewards, self.done = [], [], [], [], []
-
-        #
-        # TASK 2:
-        #   - compute discounted returns
-        #   - compute policy gradient loss function given actions and returns
-        #   - compute gradients and step the optimizer
-        #
-        rewards_scontate = discount_rewards(rewards, self.gamma) # calcolo reward scontate
-        
-        baseline = 200
-        rewards_scontate = rewards_scontate - baseline
-        
-        rewards_scontate_norm = (rewards_scontate-rewards_scontate.mean())/(rewards_scontate.std()+ 1e-8)
-        
-        policy_loss = -torch.sum(action_log_probs*rewards_scontate_norm)
-        
-        self.pol_loss = policy_loss
-        
-        self.optimizer.zero_grad() #mette a 0 per ogni inizio ciclo
-        policy_loss.backward() #calcola automaticamente i gradienti
-        self.optimizer.step() 
-        #i gradienti sono la direzione, fare backward() significa scegliere in che direzione 
-        # del grafo dell'optimizer prendere.ALLA CASSA
+        self.states, self.next_states, self.action_log_probs, self.rewards, self.done = [], [], [], [], []     
 
         #
         # TASK 3:
@@ -125,18 +109,54 @@ class Agent(object):
         #   - compute gradients and step the optimizer
         #
 
+        # Compute state values and next state values
+        _, state_values = self.policy(states)
+        _, next_state_values = self.policy(next_states)
 
+        # Compute TD error (δt)
+        td_targets = rewards + self.gamma * next_state_values.squeeze(-1) * (1 - done)
+        td_error = td_targets - state_values.squeeze(-1)
+        # Stato t (state_values):
+        # State value atteso per il futuro
 
-        # VAI VAIIII
+        #stato t + 1 (td_targets):
+        # State value atteso per il futuro (partendo da t+1) + reward effettiva dello stato precedente
 
-        return        
+        # Critic loss (Mean Squared Error)
+        critic_loss = td_error.pow(2).mean()
+
+        # Actor loss (Policy Gradient with Advantage)
+        advantages = td_error.detach()  # Detach to avoid backprop through critic
+        actor_loss = -(action_log_probs * advantages).mean()
+
+        # 1. Il vantaggio (o TD Error) viene calcolato usando il critic, poiché dipende da V(s_t) e V(s_{t+1}).
+        # 2. Senza detach(), i gradienti della perdita dell'actor si propagherebbero attraverso il critic,
+        #    modificandone i parametri in modo non desiderato.
+        # 3. Questo creerebbe conflitti tra actor e critic, poiché hanno obiettivi diversi:
+        #    - L'actor aggiorna la politica per massimizzare il vantaggio.
+        #    - Il critic aggiorna i parametri per ridurre l'errore di stima del valore.
+        # 4. Usando detach(), stacchiamo il TD Error dal grafo computazionale del critic.
+        #    - Questo blocca il flusso dei gradienti attraverso il critic.
+        #    - I parametri del critic rimangono invariati durante l'ottimizzazione dell'actor.
+        # 5. In questo modo, l'actor e il critic vengono aggiornati in modo indipendente,
+        #    preservando la stabilità e l'efficacia dell'apprendimento.
+
+        # Total loss
+        total_loss = actor_loss + critic_loss
+
+        # Optimize both actor and critic
+        self.optimizer.zero_grad()
+        total_loss.backward()
+        self.optimizer.step()
+
+        return 
 
 
     def get_action(self, state, evaluation=False):
         """ state -> action (3-d), action_log_densities """
         x = torch.from_numpy(state).float().to(self.train_device)
 
-        normal_dist = self.policy(x)
+        normal_dist, state_value = self.policy(x)
 
         if evaluation:  # Return mean
             return normal_dist.mean, None
