@@ -91,7 +91,7 @@ def main():
 
         wandb.log({"episode": episode + 1, "train_reward": train_reward, "actor_loss": agent.actor_loss, "critic_loss": agent.critic_loss, "total_loss": agent.total_loss, "tempo_episodio": tempo_episodio, "tempo_aggiornamento": tempo_aggiornamento},
                   step=episode)
-        # wandb.log({"episode": episode + 1, "policy_loss": agent.pol_loss}, step=episode)     # TASK 2
+        # wandb.log({"episode": episode + 1, "train_reward": train_reward, "policy_loss": agent.pol_loss}, step=episode)     # TASK 2
       
 
         if (episode + 1) % args.print_every == 0:
