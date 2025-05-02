@@ -108,6 +108,8 @@ class Agent(object):
         rewards_scontate_norm = (rewards_scontate-rewards_scontate.mean())/(rewards_scontate.std()+ 1e-8)
         
         policy_loss = -torch.sum(action_log_probs*rewards_scontate_norm)
+
+        self.policy_loss = policy_loss.item() #salvo il valore della loss per il log
         
         self.optimizer.zero_grad() #mette a 0 per ogni inizio ciclo
         policy_loss.backward() #calcola automaticamente i gradienti

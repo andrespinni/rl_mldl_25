@@ -10,6 +10,8 @@ from agent import Agent, Policy
 import wandb
 import os
 
+import time
+
 def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument('--model', default=None, type=str, help='Model path')
@@ -61,6 +63,9 @@ def main():
     agent = Agent(policy, device=args.device)
 
     for episode in range(args.episodes):
+
+        start = time.time()
+
         done = False
         test_reward = 0
         state = env.reset()
@@ -74,9 +79,13 @@ def main():
 
             test_reward += reward
 
-        print(f"Episode: {episode} | Return: {test_reward}")
-        out_file.write(f"Episode: {episode} | Return: {test_reward}\n")
-        wandb.log({"episode": episode, "test_reward": test_reward})
+        end = time.time()
+
+        tempo_test = end - start
+        
+        print(f"Episode: {episode+1} | Return: {test_reward}")
+        out_file.write(f"Episode: {episode+1} | Return: {test_reward}\n")
+        wandb.log({"episode": episode+1, "test_reward": test_reward, "tempo_test": tempo_test}, step=episode+1)
 
     out_file.close()
     wandb.finish()

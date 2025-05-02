@@ -12,6 +12,7 @@ from agent import Agent, Policy
 import wandb
 import os
 
+import time
 
 def parse_args():
     parser = argparse.ArgumentParser()
@@ -64,6 +65,9 @@ def main():
 
     # TASK 2 and 3: interleave data collection to policy updates
     for episode in range(args.episodes):
+
+        start = time.time()
+
         done = False
         train_reward = 0
         state = env.reset()  # Reset the environment and observe the initial state
@@ -75,10 +79,17 @@ def main():
 
             agent.store_outcome(previous_state, state, action_probabilities, reward, done)
             train_reward += reward
+        
+        checkpoint = time.time()
+        tempo_episodio = checkpoint - start
 
         agent.update_policy()
+        
+        end = time.time()
+        tempo_update = end - checkpoint
 
-        wandb.log({"episode": episode + 1, "train_reward": train_reward})
+        wandb.log({"episode": episode + 1, "train_reward": train_reward, "policy_loss": agent.policy_loss, "tempo_episodio": tempo_episodio, "tempo_update": tempo_update},
+                  step=episode + 1)
 
         if (episode + 1) % args.print_every == 0:
             print('Training episode:', episode + 1)
@@ -86,6 +97,7 @@ def main():
             
             out_file.write(f"Training episode: {episode+1}\n")
             out_file.write(f"Episode return: {train_reward}\n")
+            out_file.write(f"Policy loss: {agent.pol_loss}\n")
 
     torch.save(agent.policy.state_dict(), f"{args.name}/model.mdl")
 
