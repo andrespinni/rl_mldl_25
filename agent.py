@@ -144,6 +144,10 @@ class Agent(object):
         # Total loss
         total_loss = actor_loss + critic_loss
 
+        self.actor_loss = actor_loss.item()  # Converte il tensore in un float
+        self.critic_loss = critic_loss.item()
+        self.total_loss = total_loss.item()
+        
         # Optimize both actor and critic
         self.optimizer.zero_grad()
         total_loss.backward()
@@ -156,7 +160,7 @@ class Agent(object):
         """ state -> action (3-d), action_log_densities """
         x = torch.from_numpy(state).float().to(self.train_device)
 
-        normal_dist, state_value = self.policy(x)
+        normal_dist, _ = self.policy(x)
 
         if evaluation:  # Return mean
             return normal_dist.mean, None

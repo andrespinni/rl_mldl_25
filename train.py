@@ -12,6 +12,7 @@ from agent import Agent, Policy
 import wandb
 import os
 
+import time
 
 def parse_args():
     parser = argparse.ArgumentParser()
@@ -43,7 +44,7 @@ def main():
             "episodes": args.episodes,
             "print_every": args.print_every,
             "device": args.device,
-            "algorithm": "REINFORCE"  # Puoi personalizzare
+            "algorithm": "Actor-Critic"  # Puoi personalizzare
         }
     )
 
@@ -64,6 +65,9 @@ def main():
 
     # TASK 2 and 3: interleave data collection to policy updates
     for episode in range(args.episodes):
+        
+        start = time.time()
+
         done = False
         train_reward = 0
         state = env.reset()  # Reset the environment and observe the initial state
@@ -76,22 +80,28 @@ def main():
             agent.store_outcome(previous_state, state, action_probabilities, reward, done)
             train_reward += reward
 
-        agent.update_policy()
-        
-        
+        checkpoint = time.time()
+        tempo_episodio = checkpoint - start
 
-        wandb.log({"episode": episode + 1, "train_reward": train_reward})
-        wandb.log({"episode": episode + 1, "policy_loss": agent.pol_loss})
-        
+        agent.update_policy()
+
+        end = time.time()
+        tempo_aggiornamento = end - checkpoint
+
+
+        wandb.log({"episode": episode + 1, "train_reward": train_reward, "actor_loss": agent.actor_loss, "critic_loss": agent.critic_loss, "total_loss": agent.total_loss, "tempo_episodio": tempo_episodio, "tempo_aggiornamento": tempo_aggiornamento},
+                  step=episode)
+        # wandb.log({"episode": episode + 1, "policy_loss": agent.pol_loss}, step=episode)     # TASK 2
+      
 
         if (episode + 1) % args.print_every == 0:
             print('Training episode:', episode + 1)
             print('Episode return:', train_reward)
-            print("Policy loss:", agent.pol_loss)
+            # print("Policy loss:", agent.pol_loss)  # TASK 2
             
             out_file.write(f"Training episode: {episode+1}\n")
             out_file.write(f"Episode return: {train_reward}\n")
-            out_file.write(f"Policy loss: {agent.pol_loss}\n")
+            # out_file.write(f"Policy loss: {agent.pol_loss}\n")    # TASK 2
 
 
     torch.save(agent.policy.state_dict(), f"{args.name}/model.mdl")
