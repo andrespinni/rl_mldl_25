@@ -82,9 +82,9 @@ def main():
         end = time.time()
 
         tempo_test = end - start
-        print(f"Episode: {episode} | Return: {test_reward}")
-        out_file.write(f"Episode: {episode} | Return: {test_reward}\n")
-        wandb.log({"episode": episode, "test_reward": test_reward, "tempo_test": tempo_test})
+        print(f"Episode: {episode+1} | Return: {test_reward}")
+        out_file.write(f"Episode: {episode+1} | Return: {test_reward}\n")
+        wandb.log({"episode": episode+1, "test_reward": test_reward, "tempo_test": tempo_test}, step=episode+1)
 
     out_file.close()
     wandb.finish()
