@@ -73,7 +73,7 @@ class Policy(torch.nn.Module):
 
         x_critic = self.tanh(self.fc1_critic(x))
         x_critic = self.tanh(self.fc2_critic(x_critic))
-        state_value = self.fc3_critic(x_critic)
+        state_value = self.fc3_critic_value(x_critic)
 
         return normal_dist, state_value
 
