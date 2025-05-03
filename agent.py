@@ -82,7 +82,21 @@ class Agent(object):
     def __init__(self, policy, device='cpu'):
         self.train_device = device
         self.policy = policy.to(self.train_device)
-        self.optimizer = torch.optim.Adam(policy.parameters(), lr=1e-3)
+        #self.optimizer = torch.optim.Adam(policy.parameters(), lr=1e-3)  vecchio singolo optimizer
+        #nuova verione: doppio opt:
+        actor_params = list(self.policy.fc1_actor.parameters()) + \
+                       list(self.policy.fc2_actor.parameters()) + \
+                       list(self.policy.fc3_actor_mean.parameters()) + \
+                       [self.policy.sigma]
+
+        critic_params = list(self.policy.fc1_critic.parameters()) + \
+                        list(self.policy.fc2_critic.parameters()) + \
+                        list(self.policy.fc3_critic_value.parameters())
+        
+        #due optimizer con due lr diversi perché abbiamo visto che il critic "imoara" molto piu velocemente
+        # dal grafico delle loss, poi puo essere un'idea osservare i gradienti
+        self.actor_optimizer = torch.optim.Adam(actor_params, lr=1e-4)    # MODIFICA
+        self.critic_optimizer = torch.optim.Adam(critic_params, lr=5e-4)
 
         self.gamma = 0.99
         self.states = []
@@ -149,9 +163,18 @@ class Agent(object):
         self.total_loss = total_loss.item()
         
         # Optimize both actor and critic
-        self.optimizer.zero_grad()
-        total_loss.backward()
-        self.optimizer.step()
+        #vecchia versione singolo opt
+        #self.optimizer.zero_grad()
+        #total_loss.backward()
+        #self.optimizer.step()
+        
+        self.actor_optimizer.zero_grad()
+        actor_loss.backward()
+        self.actor_optimizer.step()
+
+        self.critic_optimizer.zero_grad()
+        critic_loss.backward()
+        self.critic_optimizer.step()
 
         return 
 
