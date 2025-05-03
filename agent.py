@@ -141,6 +141,8 @@ class Agent(object):
 
         # Actor loss (Policy Gradient with Advantage)
         advantages = td_error.detach()  # Detach to avoid backprop through critic
+        advantages = (advantages - advantages.mean()) / (advantages.std() + 1e-8) #normalizzati
+        
         actor_loss = -(action_log_probs * advantages).mean()
 
         # 1. Il vantaggio (o TD Error) viene calcolato usando il critic, poiché dipende da V(s_t) e V(s_{t+1}).
