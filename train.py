@@ -97,7 +97,7 @@ def main():
             
             out_file.write(f"Training episode: {episode+1}\n")
             out_file.write(f"Episode return: {train_reward}\n")
-            out_file.write(f"Policy loss: {agent.pol_loss}\n")
+            out_file.write(f"Policy loss: {agent.policy_loss}\n")
 
     torch.save(agent.policy.state_dict(), f"{args.name}/model.mdl")
 
