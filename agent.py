@@ -118,10 +118,10 @@ class Agent(object):
         # rewards = torch.stack(self.rewards, dim=0).to(self.train_device).squeeze(-1)
         # done = torch.Tensor(self.done).to(self.train_device)
 
-        state = torch.from_numpy(state).float().to(self.device)
-        next_state = torch.from_numpy(next_state).float().to(self.device)
-        reward = torch.tensor(reward, dtype=torch.float32).to(self.device)
-        done = torch.tensor(done, dtype=torch.float32).to(self.device)
+        state = torch.from_numpy(state).float().to(self.train_device)
+        next_state = torch.from_numpy(next_state).float().to(self.train_device)
+        reward = torch.tensor(reward, dtype=torch.float32).to(self.train_device)
+        done = torch.tensor(done, dtype=torch.float32).to(self.train_device)
         #self.states, self.next_states, self.action_log_probs, self.rewards, self.done = [], [], [], [], []     
 
         #
