@@ -88,20 +88,20 @@ class Agent(object):
         self.policy = policy.to(self.train_device)
         #self.optimizer = torch.optim.Adam(policy.parameters(), lr=1e-3)  vecchio singolo optimizer
         #nuova verione: doppio opt:
-        actor_params = list(self.policy.fc1_actor.parameters()) + \
+        self.actor_params = list(self.policy.fc1_actor.parameters()) + \
                        list(self.policy.fc2_actor.parameters()) + \
                        list(self.policy.fc3_actor_mean.parameters()) + \
                     list(self.policy.fc3_actor_logstd.parameters())
          #    [self.policy.sigma]
 
-        critic_params = list(self.policy.fc1_critic.parameters()) + \
+        self.critic_params = list(self.policy.fc1_critic.parameters()) + \
                         list(self.policy.fc2_critic.parameters()) + \
                         list(self.policy.fc3_critic_value.parameters())
         
         #due optimizer con due lr diversi perché abbiamo visto che il critic "imoara" molto piu velocemente
         # dal grafico delle loss, poi puo essere un'idea osservare i gradienti
-        self.actor_optimizer = torch.optim.Adam(actor_params, lr=1e-4)    # MODIFICA
-        self.critic_optimizer = torch.optim.Adam(critic_params, lr=5e-4)
+        self.actor_optimizer = torch.optim.Adam(self.actor_params, lr=1e-4)    # MODIFICA
+        self.critic_optimizer = torch.optim.Adam(self.critic_params, lr=5e-4)
 
         self.gamma = 0.99
         # self.states = []
