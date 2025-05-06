@@ -77,13 +77,16 @@ def main():
             previous_state = state
             state, reward, done, info = env.step(action.detach().cpu().numpy())
 
-            agent.store_outcome(previous_state, state, action_probabilities, reward, done)
+            #agent.store_outcome(previous_state, state, action_probabilities, reward, done)
             train_reward += reward
+            agent.update_policy(previous_state, state, action_probabilities, reward, done) #come i cani inseriamo l'aggiornamento dentro il while 
+                                    #perchè actor-critic aggiorna la policy senza aspettare la fine dell'episodio
+
 
         checkpoint = time.time()
         tempo_episodio = checkpoint - start
 
-        agent.update_policy()
+        #agent.update_policy() 
 
         end = time.time()
         tempo_aggiornamento = end - checkpoint

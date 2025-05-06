@@ -27,11 +27,12 @@ class Policy(torch.nn.Module):
         self.fc1_actor = torch.nn.Linear(state_space, self.hidden)
         self.fc2_actor = torch.nn.Linear(self.hidden, self.hidden)
         self.fc3_actor_mean = torch.nn.Linear(self.hidden, action_space)
-        
+        self.fc3_actor_logstd = torch.nn.Linear(self.hidden, action_space)  # bau bau
+
         # Learned standard deviation for exploration at training time 
-        self.sigma_activation = F.softplus
-        init_sigma = 0.5
-        self.sigma = torch.nn.Parameter(torch.zeros(self.action_space)+init_sigma)
+        # self.sigma_activation = F.softplus
+        # init_sigma = 0.5
+        # self.sigma = torch.nn.Parameter(torch.zeros(self.action_space)+init_sigma)
 
 
         """
@@ -62,7 +63,10 @@ class Policy(torch.nn.Module):
         x_actor = self.tanh(self.fc2_actor(x_actor))
         action_mean = self.fc3_actor_mean(x_actor)
 
-        sigma = self.sigma_activation(self.sigma)
+        log_std = self.fc3_actor_logstd(x_actor) #bau bau
+        sigma = F.softplus(log_std) #bau bau
+
+        # sigma = self.sigma_activation(self.sigma)
         normal_dist = Normal(action_mean, sigma)
 
 
@@ -87,7 +91,8 @@ class Agent(object):
         actor_params = list(self.policy.fc1_actor.parameters()) + \
                        list(self.policy.fc2_actor.parameters()) + \
                        list(self.policy.fc3_actor_mean.parameters()) + \
-                       [self.policy.sigma]
+                    list(self.policy.fc3_actor_logstd.parameters())
+         #    [self.policy.sigma]
 
         critic_params = list(self.policy.fc1_critic.parameters()) + \
                         list(self.policy.fc2_critic.parameters()) + \
@@ -99,21 +104,25 @@ class Agent(object):
         self.critic_optimizer = torch.optim.Adam(critic_params, lr=5e-4)
 
         self.gamma = 0.99
-        self.states = []
-        self.next_states = []
-        self.action_log_probs = []
-        self.rewards = []
-        self.done = []
+        # self.states = []
+        # self.next_states = []
+        # self.action_log_probs = []
+        # self.rewards = []
+        # self.done = []
 
 
-    def update_policy(self):
-        action_log_probs = torch.stack(self.action_log_probs, dim=0).to(self.train_device).squeeze(-1)
-        states = torch.stack(self.states, dim=0).to(self.train_device).squeeze(-1)
-        next_states = torch.stack(self.next_states, dim=0).to(self.train_device).squeeze(-1)
-        rewards = torch.stack(self.rewards, dim=0).to(self.train_device).squeeze(-1)
-        done = torch.Tensor(self.done).to(self.train_device)
+    def update_policy(self, state, next_state, action_log_prob, reward, done):
+        #action_log_probs = torch.stack(self.action_log_probs, dim=0).to(self.train_device).squeeze(-1)
+        # states = torch.stack(self.states, dim=0).to(self.train_device).squeeze(-1)
+        # next_states = torch.stack(self.next_states, dim=0).to(self.train_device).squeeze(-1)
+        # rewards = torch.stack(self.rewards, dim=0).to(self.train_device).squeeze(-1)
+        # done = torch.Tensor(self.done).to(self.train_device)
 
-        self.states, self.next_states, self.action_log_probs, self.rewards, self.done = [], [], [], [], []     
+        state = torch.from_numpy(state).float().to(self.device)
+        next_state = torch.from_numpy(next_state).float().to(self.device)
+        reward = torch.tensor(reward, dtype=torch.float32).to(self.device)
+        done = torch.tensor(done, dtype=torch.float32).to(self.device)
+        #self.states, self.next_states, self.action_log_probs, self.rewards, self.done = [], [], [], [], []     
 
         #
         # TASK 3:
@@ -124,12 +133,12 @@ class Agent(object):
         #
 
         # Compute state values and next state values
-        _, state_values = self.policy(states)
-        _, next_state_values = self.policy(next_states)
+        _, state_value = self.policy(state)
+        _, next_state_value = self.policy(next_state)
 
         # Compute TD error (δt)
-        td_targets = rewards + self.gamma * next_state_values.squeeze(-1) * (1 - done)
-        td_error = td_targets - state_values.squeeze(-1)
+        td_targets = reward + self.gamma * next_state_value.squeeze(-1) * (1 - done)
+        td_error = td_targets - state_value.squeeze(-1)
         # Stato t (state_values):
         # State value atteso per il futuro
 
@@ -137,13 +146,13 @@ class Agent(object):
         # State value atteso per il futuro (partendo da t+1) + reward effettiva dello stato precedente
 
         # Critic loss (Mean Squared Error)
-        critic_loss = td_error.pow(2).mean()
+        critic_loss = td_error.pow(2)
 
         # Actor loss (Policy Gradient with Advantage)
-        advantages = td_error.detach()  # Detach to avoid backprop through critic
-        advantages = (advantages - advantages.mean()) / (advantages.std() + 1e-8) #normalizzati
+        advantage = td_error.detach()  # Detach to avoid backprop through critic
+        #advantage = (advantages - advantages.mean()) / (advantages.std() + 1e-8) #normalizzati
         
-        actor_loss = -(action_log_probs * advantages).mean()
+        actor_loss = -(action_log_prob * advantage)
 
         # 1. Il vantaggio (o TD Error) viene calcolato usando il critic, poiché dipende da V(s_t) e V(s_{t+1}).
         # 2. Senza detach(), i gradienti della perdita dell'actor si propagherebbero attraverso il critic,
@@ -172,10 +181,12 @@ class Agent(object):
         
         self.actor_optimizer.zero_grad()
         actor_loss.backward()
+        torch.nn.utils.clip_grad_norm_(self.actor_params, max_norm=0.5)
         self.actor_optimizer.step()
 
         self.critic_optimizer.zero_grad()
         critic_loss.backward()
+        torch.nn.utils.clip_grad_norm_(self.critic_params, max_norm=0.5)
         self.critic_optimizer.step()
 
         return 
