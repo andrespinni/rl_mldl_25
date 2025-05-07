@@ -64,7 +64,9 @@ class Policy(torch.nn.Module):
         action_mean = self.fc3_actor_mean(x_actor)
 
         log_std = self.fc3_actor_logstd(x_actor) #bau bau
-        sigma = F.softplus(log_std) #bau bau
+        #sigma = F.softplus(log_std) #bau bau
+        sigma = torch.clamp(F.softplus(log_std), min=1e-3, max=10.0)
+
 
         # sigma = self.sigma_activation(self.sigma)
         normal_dist = Normal(action_mean, sigma)
