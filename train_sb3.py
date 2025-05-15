@@ -5,6 +5,7 @@
     pipeline with an RL algorithm of your choice between PPO and SAC.
 """
 import gym
+import argparse
 from env.custom_hopper import *
 import wandb
 from wandb.integration.sb3 import WandbCallback
@@ -12,16 +13,28 @@ from stable_baselines3 import PPO
 from stable_baselines3.common.callbacks import EvalCallback, CallbackList
 from stable_baselines3.common.evaluation import evaluate_policy
 
+def parse_args():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--episodes', default=100000, type=int, help='Number of training episodes')
+    parser.add_argument('--device', default='cpu', type=str, help='network device [cpu, cuda]')
+    parser.add_argument('--name', default='hopper-train_noName', type=str, help='Scegliere nome')
+
+    return parser.parse_args()
+
+args = parse_args()
+
 def main():
     # Crea un nuovo run W&B per tenere traccia del training.
     #config permette di centralizzare i parametri che poi usi nel codice.
     
     wandb.init(
-        project="hopper_ppo",
+        project="PPO",
+        name=f"{args.name}",
+        entity="andrea-gaudino02-politecnico-di-torino",
         config={
             "env": "CustomHopper-source-v0",
             "algorithm": "PPO",
-            "total_timesteps": 100_000,
+            "total_timesteps": args.episodes,
             "eval_freq": 1_000,
             "n_eval_episodes": 5
         }
