@@ -119,9 +119,12 @@ class Agent(object):
                     list(self.policy.fc3_actor_logstd.parameters())
          #    [self.policy.sigma]
 
-        self.critic_params = list(self.policy.fc1_critic.parameters()) + \
-                        list(self.policy.fc2_critic.parameters()) + \
-                        list(self.policy.fc3_critic_value.parameters())
+        #self.critic_params = list(self.policy.fc1_critic.parameters()) + \
+        #                list(self.policy.fc2_critic.parameters()) + \
+        #                list(self.policy.fc3_critic_value.parameters())
+        
+        self.critic_params = list(self.policy.model.parameters())
+        
         
         #due optimizer con due lr diversi perché abbiamo visto che il critic "imoara" molto piu velocemente
         # dal grafico delle loss, poi puo essere un'idea osservare i gradienti
