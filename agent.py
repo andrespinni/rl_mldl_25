@@ -18,7 +18,7 @@ class Policy(torch.nn.Module):
         super().__init__()
         self.state_space = state_space
         self.action_space = action_space
-        self.hidden = 64
+        self.hidden = 256 #bau bau
         self.tanh = torch.nn.Tanh()
 
         """
@@ -39,9 +39,29 @@ class Policy(torch.nn.Module):
             Critic network
         """
         # TASK 3: critic network for actor-critic algorithm
-        self.fc1_critic = torch.nn.Linear(state_space, self.hidden)
-        self.fc2_critic = torch.nn.Linear(self.hidden, self.hidden)
-        self.fc3_critic_value = torch.nn.Linear(self.hidden, 1)
+        #self.fc1_critic = torch.nn.Linear(state_space, self.hidden)
+        #self.fc2_critic = torch.nn.Linear(self.hidden, self.hidden)
+        #self.fc3_critic_value = torch.nn.Linear(self.hidden, 1)
+
+        self.model=torch.nn.Sequential(
+            torch.nn.Linear(self.state_space, self.hidden),
+            torch.nn.ReLU(),
+            torch.nn.Linear(self.hidden,128),
+            torch.nn.ReLU(),
+            torch.nn.Linear(128, 64),
+            torch.nn.ReLU(),
+            torch.nn.Linear(64, 32),
+            torch.nn.ReLU(),
+            torch.nn.Linear(32, 16),
+            torch.nn.ReLU(),
+            torch.nn.Linear(16, 8),
+            torch.nn.ReLU(),
+            torch.nn.Linear(8,4),
+            torch.nn.ReLU(),
+            torch.nn.Linear(4, 2),
+            torch.nn.ReLU(),
+            torch.nn.Linear(2,1)            
+        )
 
         # La dimensione finale dell'ultimo layer è 1 perché il critic network stima il valore scalare della funzione di valore dello stato V_w(s)
 
@@ -77,9 +97,12 @@ class Policy(torch.nn.Module):
         """
         # TASK 3: forward in the critic network
 
-        x_critic = self.tanh(self.fc1_critic(x))
-        x_critic = self.tanh(self.fc2_critic(x_critic))
-        state_value = self.fc3_critic_value(x_critic)
+        #x_critic = self.tanh(self.fc1_critic(x))
+        #x_critic = self.tanh(self.fc2_critic(x_critic))
+        #state_value = self.fc3_critic_value(x_critic)
+
+        state_value = self.model(x)
+
 
         return normal_dist, state_value
 
@@ -181,15 +204,30 @@ class Agent(object):
         #total_loss.backward()
         #self.optimizer.step()
         
+        # Memorizza vecchi params per il controllo del grqadiente
+        old_actor_params = [p.clone().detach() for p in self.actor_params]
+
         self.actor_optimizer.zero_grad()
         actor_loss.backward()
         torch.nn.utils.clip_grad_norm_(self.actor_params, max_norm=0.5)
         self.actor_optimizer.step()
 
+        # Dopo l'aggiornamento dell'actor
+        actor_param_change = [((new - old).abs().mean().item()) for old, new in zip(old_actor_params, self.actor_params)]
+        self.mean_actor_param_change = np.mean(actor_param_change)
+        self.std_actor_param_change = np.std(actor_param_change)
+
+        old_critic_params = [p.clone().detach() for p in self.critic_params]
+
         self.critic_optimizer.zero_grad()
         critic_loss.backward()
         torch.nn.utils.clip_grad_norm_(self.critic_params, max_norm=0.5)
         self.critic_optimizer.step()
+
+        # Dopo l'aggiornamento del critic
+        critic_param_change = [((new - old).abs().mean().item()) for old, new in zip(old_critic_params, self.critic_params)]
+        self.mean_critic_param_change = np.mean(critic_param_change)
+        self.std_critic_param_change = np.std(critic_param_change)
 
         return 
 

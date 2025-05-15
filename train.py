@@ -81,6 +81,8 @@ def main():
             train_reward += reward
             agent.update_policy(previous_state, state, action_probabilities, reward, done) #come i cani inseriamo l'aggiornamento dentro il while 
                                     #perchè actor-critic aggiorna la policy senza aspettare la fine dell'episodio
+            wandb.log({"mean_actor_params": agent.mean_actor_param_change, "std_actor_params": agent.std_actor_param_change,
+                       "mean_critic_params": agent.mean_critic_param_change, "std_critic_params": agent.std_critic_param_change})
 
 
         checkpoint = time.time()
