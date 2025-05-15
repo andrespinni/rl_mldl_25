@@ -84,8 +84,8 @@ def main():
             train_reward += reward
             agent.update_policy(previous_state, state, action_probabilities, reward, done) #come i cani inseriamo l'aggiornamento dentro il while 
                                     #perchè actor-critic aggiorna la policy senza aspettare la fine dell'episodio
-            wandb.log({"mean_actor_params": agent.mean_actor_param_change, "std_actor_params": agent.std_actor_param_change,
-                       "mean_critic_params": agent.mean_critic_param_change, "std_critic_params": agent.std_critic_param_change}, step=i)
+            wandb.log({"step": i,"mean_actor_params": agent.mean_actor_param_change, "std_actor_params": agent.std_actor_param_change,
+                       "mean_critic_params": agent.mean_critic_param_change, "std_critic_params": agent.std_critic_param_change})
             i+=1
 
 
@@ -98,8 +98,8 @@ def main():
         tempo_aggiornamento = end - checkpoint
 
 
-        wandb.log({"episode": episode + 1, "train_reward": train_reward, "actor_loss": agent.actor_loss, "critic_loss": agent.critic_loss, "total_loss": agent.total_loss, "tempo_episodio": tempo_episodio, "tempo_aggiornamento": tempo_aggiornamento},
-                  step=episode)
+        wandb.log({"episode": episode + 1, "train_reward": train_reward, "actor_loss": agent.actor_loss,
+                   "critic_loss": agent.critic_loss, "total_loss": agent.total_loss, "tempo_episodio": tempo_episodio, "tempo_aggiornamento": tempo_aggiornamento})
         # wandb.log({"episode": episode + 1, "train_reward": train_reward, "policy_loss": agent.pol_loss}, step=episode)     # TASK 2
       
 
