@@ -15,7 +15,7 @@ from stable_baselines3.common.evaluation import evaluate_policy
 
 def parse_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--episodes', default=100_000, type=int, help='Number of training episodes')
+    parser.add_argument('--episodes', default=1_000_000, type=int, help='Number of training episodes')
     parser.add_argument('--render', default=False, type=bool)
     parser.add_argument('--device', default='cpu', type=str, help='network device [cpu, cuda]')
     parser.add_argument('--name', default='hopper-train_noName', type=str, help='Scegliere nome')
@@ -36,7 +36,7 @@ def main():
             "env": "CustomHopper-source-v0",
             "algorithm": "PPO",
             "total_timesteps": args.episodes,
-            "eval_freq": 1_000,
+            "eval_freq": 10_000,
             "n_eval_episodes": 5
         },
         sync_tensorboard=True,
