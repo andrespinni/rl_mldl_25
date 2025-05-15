@@ -15,7 +15,8 @@ from stable_baselines3.common.evaluation import evaluate_policy
 
 def parse_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--episodes', default=100000, type=int, help='Number of training episodes')
+    parser.add_argument('--episodes', default=100_000, type=int, help='Number of training episodes')
+    parser.add_argument('--render', default=False, type=bool)
     parser.add_argument('--device', default='cpu', type=str, help='network device [cpu, cuda]')
     parser.add_argument('--name', default='hopper-train_noName', type=str, help='Scegliere nome')
 
@@ -37,7 +38,9 @@ def main():
             "total_timesteps": args.episodes,
             "eval_freq": 1_000,
             "n_eval_episodes": 5
-        }
+        },
+        sync_tensorboard=True,
+        monitor_gym=True
     )
     config = wandb.config
 
@@ -66,7 +69,7 @@ def main():
         "MlpPolicy",
         train_env,
         verbose=1,
-        tensorboard_log="runs/"
+        tensorboard_log=f"{args.name}/runs/"
     )
 
     # Define evaluation callback: test the agent every eval_freq steps
@@ -75,18 +78,18 @@ def main():
 
     eval_callback = EvalCallback(
         eval_env,
-        best_model_save_path="best_model/",
-        log_path="eval_logs/",
+        best_model_save_path=f"{args.name}/best_model/",
+        log_path=f"{args.name}/eval_logs/",
         eval_freq=config.eval_freq,
         n_eval_episodes=config.n_eval_episodes,
         deterministic=True, # utile nell'eval, mentre nel train è stocastico
-        render=False
-    )
+        render=args.render
+        )
 
     # Define Weights & Biases callback
     # Salva i modelli e logga automaticamente i grafici su W&B
     wandb_callback = WandbCallback(
-        model_save_path="models/",
+        model_save_path=f"{args.name}/models/",
         verbose=2
     )
 
