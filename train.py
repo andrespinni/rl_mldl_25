@@ -62,6 +62,9 @@ def main():
 
     policy = Policy(observation_space_dim, action_space_dim)
     agent = Agent(policy, device=args.device)
+    
+    i=0
+
 
     # TASK 2 and 3: interleave data collection to policy updates
     for episode in range(args.episodes):
@@ -71,7 +74,7 @@ def main():
         done = False
         train_reward = 0
         state = env.reset()  # Reset the environment and observe the initial state
-
+        
         while not done:  # Loop until the episode is over
             action, action_probabilities = agent.get_action(state)
             previous_state = state
@@ -82,7 +85,8 @@ def main():
             agent.update_policy(previous_state, state, action_probabilities, reward, done) #come i cani inseriamo l'aggiornamento dentro il while 
                                     #perchè actor-critic aggiorna la policy senza aspettare la fine dell'episodio
             wandb.log({"mean_actor_params": agent.mean_actor_param_change, "std_actor_params": agent.std_actor_param_change,
-                       "mean_critic_params": agent.mean_critic_param_change, "std_critic_params": agent.std_critic_param_change})
+                       "mean_critic_params": agent.mean_critic_param_change, "std_critic_params": agent.std_critic_param_change}, step=i)
+            i+=1
 
 
         checkpoint = time.time()
