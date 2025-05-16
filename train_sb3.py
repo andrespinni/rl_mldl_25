@@ -4,6 +4,7 @@
     Read the stable-baselines3 documentation and implement a training
     pipeline with an RL algorithm of your choice between PPO and SAC.
 """
+import os
 import gym
 import argparse
 from env.custom_hopper import *
@@ -19,10 +20,16 @@ def parse_args():
     parser.add_argument('--render', default=False, type=bool)
     parser.add_argument('--device', default='cpu', type=str, help='network device [cpu, cuda]')
     parser.add_argument('--name', default='hopper-train_noName', type=str, help='Scegliere nome')
+    parser.add_argument("--mod_train", default="source",type=str)
+    parser.add_argument("--mod_eval", default="source",type=str)
 
+    
     return parser.parse_args()
 
 args = parse_args()
+
+mod_train=args.mod_train
+mod_eval=args.mod_eval
 
 def main():
     # Crea un nuovo run W&B per tenere traccia del training.
@@ -30,7 +37,7 @@ def main():
     
     wandb.init(
         project="PPO",
-        name=f"{args.name}",
+        name=f"{args.name}_{mod_train}",
         entity="andrea-gaudino02-politecnico-di-torino",
         config={
             "env": "CustomHopper-source-v0",
@@ -43,11 +50,13 @@ def main():
         monitor_gym=True
     )
     config = wandb.config
+    
 
+    
     # Create training and evaluation environments
     # Uno per il training, uno per la valutazione periodica
-    train_env = gym.make('CustomHopper-source-v0')
-    eval_env = gym.make('CustomHopper-source-v0')
+    train_env = gym.make(f'CustomHopper-{mod_train}-v0')
+    eval_env = gym.make(f'CustomHopper-{mod_eval}-v0')
 
     # Utile per capire le dimensioni dello stato e dell’azione.
     #get_parameters() è una funzione custom che stampa, ad esempio, le masse dei link
@@ -56,6 +65,22 @@ def main():
     print('State space:', train_env.observation_space)  # state-space
     print('Action space:', train_env.action_space)  # action-space
     print('Dynamics parameters:', train_env.get_parameters())  # masses of each link of the Hopper
+    
+    
+    #log dei dettagli
+    os.makedirs(args.name, exist_ok=True)
+    out_file_name = f"{args.name}/dettagli_train-sb3.txt"
+    out_file = open(out_file_name, "w")
+    
+    
+    out_file.write(f"Action space: {train_env.action_space}\n")
+    out_file.write(f"State space: {train_env.observation_space}\n")
+    out_file.write(f"Dynamic parameters: {train_env.get_parameters()}\n")
+    
+    out_file.write(f"\nModel trainato con {mod_train}")
+    out_file.write(f"Model eval con {mod_eval}\n")
+        
+    
 
     #
     # TASK 4 & 5: train and test policies on the Hopper env with stable-baselines3
@@ -116,6 +141,9 @@ def main():
         deterministic=True
     )
     print(f"Final evaluation mean reward: {mean_reward:.2f} +/- {std_reward:.2f}")
+    
+    out_file.write(f"Final evaluation mean reward: {mean_reward:.2f} +/- {std_reward:.2f}")
+    out_file.close()
 
     # Finish the W&B run
     wandb.finish()

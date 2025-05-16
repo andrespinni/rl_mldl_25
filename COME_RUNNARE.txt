@@ -1,6 +1,6 @@
 train
-python train.py --name METTI_NOME
+python train_sb3.py --name METTI_NOME --mod_train/--mod_eval source/target
 
 
 test
-python test.py --model NOME_DI_PRIMA/model.mdl --render/NULLA --name NOME_DI_PRIMA
+python test_sb3.py --model NOME_DI_PRIMA/models/model.zip --render/NULLA --name NOME_DI_PRIMA --mod_test source/target
