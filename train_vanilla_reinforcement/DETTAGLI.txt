@@ -1,4 +1,0 @@
-28/4 alla sera
-primo run
-vanilla reinforcement con il primo algoritmo di github
-100000 episodi, ogni 100 reward
