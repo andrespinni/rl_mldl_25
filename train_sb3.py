@@ -142,6 +142,7 @@ def main():
     )
     print(f"Final evaluation mean reward: {mean_reward:.2f} +/- {std_reward:.2f}")
     
+    
     out_file.write(f"Final evaluation mean reward: {mean_reward:.2f} +/- {std_reward:.2f}")
     out_file.close()
 
