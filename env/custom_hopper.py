@@ -33,9 +33,14 @@ class CustomHopper(MujocoEnv, utils.EzPickle):
         # TASK 6: implement domain randomization. Remember to sample new dynamics parameter
         #         at the start of each training episode.
         
-        raise NotImplementedError()
+        #raise NotImplementedError()
 
-        return
+
+        masses = np.copy(self.original_masses)
+        random_parameters = np.random.uniform(low=0.8, high=1.2)
+        masses[1:] = masses[1:]*random_parameters
+
+        return masses
 
 
     def get_parameters(self):
@@ -81,6 +86,7 @@ class CustomHopper(MujocoEnv, utils.EzPickle):
 
     def reset_model(self):
         """Reset the environment to a random initial state"""
+        self.set_random_parameters()
         qpos = self.init_qpos + self.np_random.uniform(low=-.005, high=.005, size=self.model.nq)
         qvel = self.init_qvel + self.np_random.uniform(low=-.005, high=.005, size=self.model.nv)
         self.set_state(qpos, qvel)
