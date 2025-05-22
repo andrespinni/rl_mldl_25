@@ -93,7 +93,7 @@ def main():
     model = PPO(
         "MlpPolicy",
         train_env,
-        verbose=1,
+        verbose=0,  #******************* settato a 0 per prova*****************************************prima era a 1
         tensorboard_log=f"{args.name}/runs/"
     )
 
@@ -115,7 +115,7 @@ def main():
     # Salva i modelli e logga automaticamente i grafici su W&B
     wandb_callback = WandbCallback(
         model_save_path=f"{args.name}/models/",
-        verbose=2
+        verbose=0 #******************************prova************************** prima era a 2
     )
 
     # Combine callbacks

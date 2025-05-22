@@ -20,6 +20,7 @@ class CustomHopper(MujocoEnv, utils.EzPickle):
 
         if domain == 'source':  # Source environment has an imprecise torso mass (-30% shift)
             self.sim.model.body_mass[1] *= 0.7
+        self.i=0 #conteggio per stampare gli episodi *****************************
 
     def set_random_parameters(self):
         """Set random masses"""
@@ -83,14 +84,16 @@ class CustomHopper(MujocoEnv, utils.EzPickle):
             self.sim.data.qvel.flat
         ])
 
-
+    
     def reset_model(self):
         """Reset the environment to a random initial state"""
         self.set_random_parameters()
         qpos = self.init_qpos + self.np_random.uniform(low=-.005, high=.005, size=self.model.nq)
         qvel = self.init_qvel + self.np_random.uniform(low=-.005, high=.005, size=self.model.nv)
         self.set_state(qpos, qvel)
-        print(self.get_parameters())
+        if self.i % 10000 == 0:
+            print(self.get_parameters())
+        self.i += 1
         return self._get_obs()
 
 
