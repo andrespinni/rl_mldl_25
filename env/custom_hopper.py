@@ -37,7 +37,7 @@ class CustomHopper(MujocoEnv, utils.EzPickle):
 
 
         masses = np.copy(self.original_masses)
-        random_parameters = np.random.uniform(low=0.8, high=1.2)
+        random_parameters = np.random.uniform(low=0.8, high=1.2, size = len(masses)-1)
         masses[1:] = masses[1:]*random_parameters
 
         return masses
