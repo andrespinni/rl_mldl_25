@@ -78,7 +78,8 @@ def main():
     out_file.write(f"Dynamic parameters: {train_env.get_parameters()}\n")
     
     out_file.write(f"\nModel trainato con {mod_train}")
-    out_file.write(f"Model eval con {mod_eval}\n")
+    out_file.write(f"Model eval con 
+                   {mod_eval}\n")
         
     
 
