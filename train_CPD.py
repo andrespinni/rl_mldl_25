@@ -1,4 +1,5 @@
 import gym
+import os
 import numpy as np
 import torch
 import torch.nn as nn
@@ -24,7 +25,7 @@ class CyclicPolicyDistillationPPO:
         self,
         env_id,
         N=3,
-        local_steps=20,
+        local_steps=200_000,
         rollout_per_domain=2048,
         distill_epochs=10,
         distill_batch=64,
@@ -62,6 +63,7 @@ class CyclicPolicyDistillationPPO:
         order = list(range(self.N)) + list(range(self.N-1, -1, -1))
         for idx in order:
             print(f"Training local PPO domain {idx}")
+            print(f"Training local PPO domain {idx}",file=file)
             self.models[idx].learn(total_timesteps=self.local_steps)
 
     def collect_distill_data(self):
@@ -95,6 +97,8 @@ class CyclicPolicyDistillationPPO:
                 total_loss += loss.item() * obs_b.size(0)
             avg_loss = total_loss / len(loader.dataset)
             print(f"Distill MLPolicy epoch {epoch+1}/{self.distill_epochs}, loss: {avg_loss:.6f}")
+            print(f"Distill MLPolicy epoch {epoch+1}/{self.distill_epochs}, loss: {avg_loss:.6f}",file=file)
+
 
     def evaluate_policy(self, policy_fn, env_id, episodes=20):
         env = gym.make(env_id)
@@ -110,13 +114,14 @@ class CyclicPolicyDistillationPPO:
             rewards.append(total_r)
         return np.mean(rewards), np.std(rewards)
 
-    def run(self, max_cycles=5, eval_episodes=20, fine_tune_steps=100000):
+    def run(self, max_cycles=50, eval_episodes=20, fine_tune_steps=100000):
         target_env = "CustomHopper-target-v0"
         best_mean = -np.inf
         patience = 0
 
         for cycle in range(max_cycles):
             print(f"\n=== Cycle {cycle+1}/{max_cycles} ===")
+            print(f"\n=== Cycle {cycle+1}/{max_cycles} ===",file=file)
             # 1) local training
             self.local_training_cycle()
             # 2) distill
@@ -125,26 +130,32 @@ class CyclicPolicyDistillationPPO:
             mlp_wrap = MLPWrapper(self.global_mlp, self.device)
             mean_mlp, std_mlp = self.evaluate_policy(mlp_wrap, target_env, eval_episodes)
             print(f"Distilled MLP zero-shot: mean {mean_mlp:.2f} ± {std_mlp:.2f}")
+            print(f"Distilled MLP zero-shot: mean {mean_mlp:.2f} ± {std_mlp:.2f}",file=file)
             # early-stopping check on MLP performance
             if best_mean > -np.inf:
                 z_score = (mean_mlp - best_mean) / (std_mlp + 1e-8)
                 print(f"Improvement z-score: {z_score:.2f} (threshold {self.z_threshold})")
+                print(f"Improvement z-score: {z_score:.2f} (threshold {self.z_threshold})",file=file)
                 if z_score < self.z_threshold:
                     patience += 1
                     print(f"No significant improvement, patience {patience}/{self.early_stop_patience}")
+                    print(f"No significant improvement, patience {patience}/{self.early_stop_patience}",file=file)
                 else:
                     best_mean = mean_mlp
                     patience = 0
                     print("Significant improvement, resetting patience.")
+                    print("Significant improvement, resetting patience.",file=file)
                 if patience >= self.early_stop_patience:
                     print("Early stopping triggered.")
+                    print("Early stopping triggered.",file=file)
                     break
             else:
                 best_mean = mean_mlp
                 print("Initial mean set.")
+                print("Initial mean set.",file=file)
 
         # save distilled MLP
-        torch.save(self.global_mlp.state_dict(), "ppo_global_distilled.pth")
+        torch.save(self.global_mlp.state_dict(), "OUTPUT_CPD/ppo_global_distilled.pth")
 
         """
         # 3b) fine-tuning with PPO using distilled weights
@@ -163,5 +174,8 @@ class CyclicPolicyDistillationPPO:
         """
 
 if __name__ == '__main__':
+    os.makedirs("OUTPUT_CPD",exist_ok=True)
+    file = open("OUTPUT_CPD/log.txt","w")
     trainer = CyclicPolicyDistillationPPO(env_id="CustomHopper-v0")
     trainer.run()
+    file.close()
