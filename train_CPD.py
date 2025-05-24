@@ -34,7 +34,7 @@ class CyclicPolicyDistillationPPO:
         self,
         env_id,
         N=3,
-        local_steps=200_000,
+        local_steps=100000,
         rollout_per_domain=2048,
         distill_epochs=10,
         distill_batch=64,
@@ -124,7 +124,7 @@ class CyclicPolicyDistillationPPO:
             rewards.append(total_r)
         return np.mean(rewards), np.std(rewards)
 
-    def run(self, max_cycles=50, eval_episodes=20, fine_tune_steps=100000):
+    def run(self, max_cycles=30, eval_episodes=20, fine_tune_steps=100000):
         target_env = "CustomHopper-target-v0"
         best_mean = -np.inf
         patience = 0
