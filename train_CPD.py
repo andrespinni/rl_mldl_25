@@ -1,4 +1,5 @@
 import gym
+import random
 import os
 import numpy as np
 import torch
@@ -8,6 +9,14 @@ from stable_baselines3 import PPO
 from torch.utils.data import DataLoader, TensorDataset
 from env.custom_hopper import *
 
+
+SEED = 1
+random.seed(SEED)
+np.random.seed(SEED)
+torch.manual_seed(SEED)
+if torch.cuda.is_available():
+    torch.cuda.manual_seed_all(SEED)
+    
 class MLPWrapper:
     """Wrap a PyTorch MLP policy for Gym-style evaluation"""
     def __init__(self, mlp, device='cpu'):
@@ -35,6 +44,7 @@ class CyclicPolicyDistillationPPO:
         z_threshold=1.96,
         early_stop_patience=3
     ):
+        
         self.N = N
         self.local_steps = local_steps
         self.rollout_per_domain = rollout_per_domain
