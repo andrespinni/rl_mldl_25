@@ -1,0 +1,231 @@
+
+=== Cycle 1/50 ===
+Training local PPO domain 0
+Training local PPO domain 1
+Training local PPO domain 2
+Training local PPO domain 2
+Training local PPO domain 1
+Training local PPO domain 0
+Distill MLPolicy epoch 1/10, loss: 0.188686
+Distill MLPolicy epoch 2/10, loss: 0.092820
+Distill MLPolicy epoch 3/10, loss: 0.076079
+Distill MLPolicy epoch 4/10, loss: 0.066694
+Distill MLPolicy epoch 5/10, loss: 0.061088
+Distill MLPolicy epoch 6/10, loss: 0.055121
+Distill MLPolicy epoch 7/10, loss: 0.052286
+Distill MLPolicy epoch 8/10, loss: 0.048666
+Distill MLPolicy epoch 9/10, loss: 0.046089
+Distill MLPolicy epoch 10/10, loss: 0.043973
+Distilled MLP zero-shot: mean 625.90 ± 24.58
+Initial mean set.
+
+=== Cycle 2/50 ===
+Training local PPO domain 0
+Training local PPO domain 1
+Training local PPO domain 2
+Training local PPO domain 2
+Training local PPO domain 1
+Training local PPO domain 0
+Distill MLPolicy epoch 1/10, loss: 0.083406
+Distill MLPolicy epoch 2/10, loss: 0.053707
+Distill MLPolicy epoch 3/10, loss: 0.046551
+Distill MLPolicy epoch 4/10, loss: 0.041277
+Distill MLPolicy epoch 5/10, loss: 0.038296
+Distill MLPolicy epoch 6/10, loss: 0.035910
+Distill MLPolicy epoch 7/10, loss: 0.033722
+Distill MLPolicy epoch 8/10, loss: 0.032293
+Distill MLPolicy epoch 9/10, loss: 0.031331
+Distill MLPolicy epoch 10/10, loss: 0.029533
+Distilled MLP zero-shot: mean 655.75 ± 309.23
+Improvement z-score: 0.10 (threshold 0.5)
+No significant improvement, patience 1/8
+
+=== Cycle 3/50 ===
+Training local PPO domain 0
+Training local PPO domain 1
+Training local PPO domain 2
+Training local PPO domain 2
+Training local PPO domain 1
+Training local PPO domain 0
+Distill MLPolicy epoch 1/10, loss: 0.102609
+Distill MLPolicy epoch 2/10, loss: 0.078540
+Distill MLPolicy epoch 3/10, loss: 0.069831
+Distill MLPolicy epoch 4/10, loss: 0.064102
+Distill MLPolicy epoch 5/10, loss: 0.060915
+Distill MLPolicy epoch 6/10, loss: 0.057984
+Distill MLPolicy epoch 7/10, loss: 0.055352
+Distill MLPolicy epoch 8/10, loss: 0.051703
+Distill MLPolicy epoch 9/10, loss: 0.050747
+Distill MLPolicy epoch 10/10, loss: 0.048527
+Distilled MLP zero-shot: mean 1079.25 ± 329.51
+Improvement z-score: 1.38 (threshold 0.5)
+Significant improvement, resetting patience.
+
+=== Cycle 4/50 ===
+Training local PPO domain 0
+Training local PPO domain 1
+Training local PPO domain 2
+Training local PPO domain 2
+Training local PPO domain 1
+Training local PPO domain 0
+Distill MLPolicy epoch 1/10, loss: 0.102885
+Distill MLPolicy epoch 2/10, loss: 0.084644
+Distill MLPolicy epoch 3/10, loss: 0.079661
+Distill MLPolicy epoch 4/10, loss: 0.073209
+Distill MLPolicy epoch 5/10, loss: 0.068923
+Distill MLPolicy epoch 6/10, loss: 0.066025
+Distill MLPolicy epoch 7/10, loss: 0.064081
+Distill MLPolicy epoch 8/10, loss: 0.061612
+Distill MLPolicy epoch 9/10, loss: 0.058557
+Distill MLPolicy epoch 10/10, loss: 0.057393
+Distilled MLP zero-shot: mean 1118.02 ± 342.09
+Improvement z-score: 0.11 (threshold 0.5)
+No significant improvement, patience 1/8
+
+=== Cycle 5/50 ===
+Training local PPO domain 0
+Training local PPO domain 1
+Training local PPO domain 2
+Training local PPO domain 2
+Training local PPO domain 1
+Training local PPO domain 0
+Distill MLPolicy epoch 1/10, loss: 0.081383
+Distill MLPolicy epoch 2/10, loss: 0.064081
+Distill MLPolicy epoch 3/10, loss: 0.058988
+Distill MLPolicy epoch 4/10, loss: 0.054315
+Distill MLPolicy epoch 5/10, loss: 0.051683
+Distill MLPolicy epoch 6/10, loss: 0.049760
+Distill MLPolicy epoch 7/10, loss: 0.047960
+Distill MLPolicy epoch 8/10, loss: 0.046556
+Distill MLPolicy epoch 9/10, loss: 0.045262
+Distill MLPolicy epoch 10/10, loss: 0.044538
+Distilled MLP zero-shot: mean 821.83 ± 141.60
+Improvement z-score: -1.82 (threshold 0.5)
+No significant improvement, patience 2/8
+
+=== Cycle 6/50 ===
+Training local PPO domain 0
+Training local PPO domain 1
+Training local PPO domain 2
+Training local PPO domain 2
+Training local PPO domain 1
+Training local PPO domain 0
+Distill MLPolicy epoch 1/10, loss: 0.101355
+Distill MLPolicy epoch 2/10, loss: 0.078286
+Distill MLPolicy epoch 3/10, loss: 0.069374
+Distill MLPolicy epoch 4/10, loss: 0.065107
+Distill MLPolicy epoch 5/10, loss: 0.063565
+Distill MLPolicy epoch 6/10, loss: 0.059132
+Distill MLPolicy epoch 7/10, loss: 0.055768
+Distill MLPolicy epoch 8/10, loss: 0.054678
+Distill MLPolicy epoch 9/10, loss: 0.052439
+Distill MLPolicy epoch 10/10, loss: 0.050790
+Distilled MLP zero-shot: mean 112.11 ± 3.57
+Improvement z-score: -270.92 (threshold 0.5)
+No significant improvement, patience 3/8
+
+=== Cycle 7/50 ===
+Training local PPO domain 0
+Training local PPO domain 1
+Training local PPO domain 2
+Training local PPO domain 2
+Training local PPO domain 1
+Training local PPO domain 0
+Distill MLPolicy epoch 1/10, loss: 0.086500
+Distill MLPolicy epoch 2/10, loss: 0.066744
+Distill MLPolicy epoch 3/10, loss: 0.061454
+Distill MLPolicy epoch 4/10, loss: 0.057296
+Distill MLPolicy epoch 5/10, loss: 0.054695
+Distill MLPolicy epoch 6/10, loss: 0.052113
+Distill MLPolicy epoch 7/10, loss: 0.049961
+Distill MLPolicy epoch 8/10, loss: 0.048748
+Distill MLPolicy epoch 9/10, loss: 0.046687
+Distill MLPolicy epoch 10/10, loss: 0.045081
+Distilled MLP zero-shot: mean 595.88 ± 70.63
+Improvement z-score: -6.84 (threshold 0.5)
+No significant improvement, patience 4/8
+
+=== Cycle 8/50 ===
+Training local PPO domain 0
+Training local PPO domain 1
+Training local PPO domain 2
+Training local PPO domain 2
+Training local PPO domain 1
+Training local PPO domain 0
+Distill MLPolicy epoch 1/10, loss: 0.072676
+Distill MLPolicy epoch 2/10, loss: 0.055739
+Distill MLPolicy epoch 3/10, loss: 0.050920
+Distill MLPolicy epoch 4/10, loss: 0.047130
+Distill MLPolicy epoch 5/10, loss: 0.044355
+Distill MLPolicy epoch 6/10, loss: 0.041944
+Distill MLPolicy epoch 7/10, loss: 0.039709
+Distill MLPolicy epoch 8/10, loss: 0.039509
+Distill MLPolicy epoch 9/10, loss: 0.037384
+Distill MLPolicy epoch 10/10, loss: 0.035754
+Distilled MLP zero-shot: mean 21.67 ± 1.58
+Improvement z-score: -667.44 (threshold 0.5)
+No significant improvement, patience 5/8
+
+=== Cycle 9/50 ===
+Training local PPO domain 0
+Training local PPO domain 1
+Training local PPO domain 2
+Training local PPO domain 2
+Training local PPO domain 1
+Training local PPO domain 0
+Distill MLPolicy epoch 1/10, loss: 0.088880
+Distill MLPolicy epoch 2/10, loss: 0.068431
+Distill MLPolicy epoch 3/10, loss: 0.061458
+Distill MLPolicy epoch 4/10, loss: 0.057699
+Distill MLPolicy epoch 5/10, loss: 0.053880
+Distill MLPolicy epoch 6/10, loss: 0.051989
+Distill MLPolicy epoch 7/10, loss: 0.051464
+Distill MLPolicy epoch 8/10, loss: 0.048711
+Distill MLPolicy epoch 9/10, loss: 0.047359
+Distill MLPolicy epoch 10/10, loss: 0.045775
+Distilled MLP zero-shot: mean 144.39 ± 28.97
+Improvement z-score: -32.26 (threshold 0.5)
+No significant improvement, patience 6/8
+
+=== Cycle 10/50 ===
+Training local PPO domain 0
+Training local PPO domain 1
+Training local PPO domain 2
+Training local PPO domain 2
+Training local PPO domain 1
+Training local PPO domain 0
+Distill MLPolicy epoch 1/10, loss: 0.073847
+Distill MLPolicy epoch 2/10, loss: 0.055463
+Distill MLPolicy epoch 3/10, loss: 0.049973
+Distill MLPolicy epoch 4/10, loss: 0.047133
+Distill MLPolicy epoch 5/10, loss: 0.044334
+Distill MLPolicy epoch 6/10, loss: 0.042810
+Distill MLPolicy epoch 7/10, loss: 0.041875
+Distill MLPolicy epoch 8/10, loss: 0.039703
+Distill MLPolicy epoch 9/10, loss: 0.038757
+Distill MLPolicy epoch 10/10, loss: 0.038441
+Distilled MLP zero-shot: mean 433.78 ± 300.73
+Improvement z-score: -2.15 (threshold 0.5)
+No significant improvement, patience 7/8
+
+=== Cycle 11/50 ===
+Training local PPO domain 0
+Training local PPO domain 1
+Training local PPO domain 2
+Training local PPO domain 2
+Training local PPO domain 1
+Training local PPO domain 0
+Distill MLPolicy epoch 1/10, loss: 0.064160
+Distill MLPolicy epoch 2/10, loss: 0.050032
+Distill MLPolicy epoch 3/10, loss: 0.045376
+Distill MLPolicy epoch 4/10, loss: 0.041895
+Distill MLPolicy epoch 5/10, loss: 0.040417
+Distill MLPolicy epoch 6/10, loss: 0.038303
+Distill MLPolicy epoch 7/10, loss: 0.036410
+Distill MLPolicy epoch 8/10, loss: 0.035055
+Distill MLPolicy epoch 9/10, loss: 0.033638
+Distill MLPolicy epoch 10/10, loss: 0.033289
+Distilled MLP zero-shot: mean 677.85 ± 270.56
+Improvement z-score: -1.48 (threshold 0.5)
+No significant improvement, patience 8/8
+Early stopping triggered.
