@@ -38,7 +38,8 @@ class CyclicPolicyDistillationPPO:
         rollout_per_domain=2048,
         distill_epochs=10,
         distill_batch=64,
-        lr=3e-4,
+        #********************************** cambio del learning rate, prima era 3e-4 ******************
+        lr=5e-5,
         device='cpu',
         early_stop_delta=1.0,
         z_threshold=1.96,
@@ -63,11 +64,27 @@ class CyclicPolicyDistillationPPO:
         obs_dim = self.envs[0].observation_space.shape[0]
         act_dim = self.envs[0].action_space.shape[0]
         self.global_mlp = nn.Sequential(
+            ###******************** ho aggiunto degli strati ******************
+            #********************** prima era solo obs_dim, 256 -> 256,256 -> 256, act_dim
             nn.Linear(obs_dim, 256), nn.ReLU(),
             nn.Linear(256, 256), nn.ReLU(),
-            nn.Linear(256, act_dim)
+            nn.Linear(256, 128), nn.ReLU(),
+            nn.Linear(128, 128), nn.ReLU(),
+            nn.Linear(128, 64), nn.ReLU(),
+            nn.Linear(64, 64), nn.ReLU(),
+            nn.Linear(64, 32), nn.ReLU(),
+            nn.Linear(32, 32), nn.ReLU(),
+            nn.Linear(32, act_dim)
         ).to(self.device)
+        self.global_mlp.apply(self.init_weights) #******************aggiunta inizializzaione dei pesi*******************
         self.optimizer = optim.Adam(self.global_mlp.parameters(), lr=lr)
+
+
+    def init_weights(m):
+        if isinstance(m, nn.Linear):
+            torch.nn.init.normal_(m.weight)
+            torch.nn.init.zeros_(m.bias)
+
 
     def local_training_cycle(self):
         order = list(range(self.N)) + list(range(self.N-1, -1, -1))
