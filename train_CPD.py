@@ -76,7 +76,7 @@ class CyclicPolicyDistillationPPO:
             nn.Linear(32, 32), nn.ReLU(),
             nn.Linear(32, act_dim)
         ).to(self.device)
-        self.global_mlp.apply(self.init_weights) #******************aggiunta inizializzaione dei pesi*******************
+        #self.global_mlp.apply(self.init_weights) #******************aggiunta inizializzaione dei pesi*******************
         self.optimizer = optim.Adam(self.global_mlp.parameters(), lr=lr)
 
 
