@@ -59,8 +59,6 @@ class CyclicPolicyDistillationPPO:
 
         # sub-domain PPO agents
         self.envs = [gym.make(env_id) for _ in range(N)]
-        self.dr = DR(N, self.envs)
-        self.dr.set_random_parameters()
         self.models = [PPO('MlpPolicy', env, verbose=0) for env in self.envs]
 
         # global MLP policy for distillation
@@ -94,12 +92,17 @@ class CyclicPolicyDistillationPPO:
         for idx in order:
             print(f"Training local PPO domain {idx}")
             print(f"Training local PPO domain {idx}",file=file)
+
+            #### AAAAAAA RICORDAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+
             self.models[idx].learn(total_timesteps=self.local_steps)
 
     def collect_distill_data(self):
         obs_buf, act_buf = [], []
         for idx, model in enumerate(self.models):
             env = self.envs[idx]
+            
+            # AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA RICORDAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
             obs = env.reset()
             collected = 0
             while collected < self.rollout_per_domain:

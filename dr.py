@@ -1,20 +1,18 @@
-import train_CPD
-import env.custom_hopper
 import numpy as np
 from env.mujoco_env import MujocoEnv
 
 class DR(MujocoEnv):
-    def __init__(self, N, envs):
+    def __init__(self, N):
         self.minMass = 0.7
         self.maxMass = 1.3
         self.minFriction = 0.8
         self.maxFriction = 1.2
         self.N = N
-        self.envs = envs
 
-    def set_random_parameters(self):
+    def set_random_parameters(self, env, id):
         """Set random masses"""
-        self.set_parameters(self.sample_parameters())
+        env = self.set_parameters(self.sample_parameters(), env, id)
+        return env
 
     def sample_parameters(self):
         """Sample masses, friction, and damping according to a domain randomization distribution"""
@@ -42,9 +40,8 @@ class DR(MujocoEnv):
 
         return params_list
         
-    def set_parameters(self, params):
+    def set_parameters(self, params, env, id):
         """Set each hopper link's mass, friction, and damping to new values"""
-        
-        for i, env in enumerate(self.envs):
-            env.sim.model.body_mass[2:] = env.sim.model.body_mass[2:] * params[i]["mass"]
-            self.sim.model.geom_friction[:] = self.sim.model.geom_friction[:] * params[i]["friction"]
+        env.sim.model.body_mass[2:] = env.sim.model.body_mass[2:] * params[id]["mass"]
+        env.sim.model.geom_friction[:] = env.sim.model.geom_friction[:] * params[id]["friction"]
+        return env

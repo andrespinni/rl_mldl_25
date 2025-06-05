@@ -9,7 +9,7 @@ import numpy as np
 import gym
 from gym import utils
 from .mujoco_env import MujocoEnv
-
+from dr import DR
 
 class CustomHopper(MujocoEnv, utils.EzPickle):
     def __init__(self, domain=None):
@@ -22,6 +22,10 @@ class CustomHopper(MujocoEnv, utils.EzPickle):
 
         if domain == 'source':  # Source environment has an imprecise torso mass (-30% shift)
             self.sim.model.body_mass[1] *= 0.7
+
+        # AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA RICORDAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+        self.dr = DR(N)
+
     '''    
     def set_random_parameters(self):
         """Set random masses"""
@@ -91,7 +95,7 @@ class CustomHopper(MujocoEnv, utils.EzPickle):
     
     def reset_model(self):
         """Reset the environment to a random initial state"""
-        self.set_random_parameters()
+        dr.set_random_parameters()
         qpos = self.init_qpos + self.np_random.uniform(low=-.005, high=.005, size=self.model.nq)
         qvel = self.init_qvel + self.np_random.uniform(low=-.005, high=.005, size=self.model.nv)
         self.set_state(qpos, qvel)
