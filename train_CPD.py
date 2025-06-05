@@ -8,6 +8,7 @@ import torch.optim as optim
 from stable_baselines3 import PPO
 from torch.utils.data import DataLoader, TensorDataset
 from env.custom_hopper import *
+from dr import DR
 
 
 SEED = 1
@@ -58,6 +59,8 @@ class CyclicPolicyDistillationPPO:
 
         # sub-domain PPO agents
         self.envs = [gym.make(env_id) for _ in range(N)]
+        self.dr = DR(N, self.envs)
+        self.dr.set_random_parameters()
         self.models = [PPO('MlpPolicy', env, verbose=0) for env in self.envs]
 
         # global MLP policy for distillation

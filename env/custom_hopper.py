@@ -17,42 +17,47 @@ class CustomHopper(MujocoEnv, utils.EzPickle):
         utils.EzPickle.__init__(self)
 
         self.original_masses = np.copy(self.sim.model.body_mass[1:])    # Default link masses
+        self.original_friction = np.copy(self.sim.model.geom_friction)  # Default friction (n_geom, 3)
+        self.original_damping = np.copy(self.sim.model.dof_damping)     # Default damping (n_dof,)
 
         if domain == 'source':  # Source environment has an imprecise torso mass (-30% shift)
             self.sim.model.body_mass[1] *= 0.7
-
+    '''    
     def set_random_parameters(self):
         """Set random masses"""
         self.set_parameters(self.sample_parameters())
 
-
     def sample_parameters(self):
-        """Sample masses according to a domain randomization distribution"""
-        
-        #
-        # TASK 6: implement domain randomization. Remember to sample new dynamics parameter
-        #         at the start of each training episode.
-        
-        #raise NotImplementedError()
+        """Sample masses, friction, and damping according to a domain randomization distribution"""
 
-
+        # Randomize masses (excluding root)
         masses = np.copy(self.original_masses)
-        random_parameters = np.random.uniform(low=0.7, high=1.3, size = len(masses)-1)
-        masses[1:] = masses[1:]*random_parameters
+        mass_scale = np.random.uniform(low=0.7, high=1.3, size=len(masses))
+        masses = masses * mass_scale
 
-        return masses
+        # Randomize friction coefficients (for each geom, 3 values: sliding, torsional, rolling)
+        friction = np.copy(self.original_friction)
+        friction_scale = np.random.uniform(low=0.6, high=1.2, size=friction.shape)
+        friction = friction * friction_scale
 
+        # Randomize damping (for each degree of freedom)
+        damping = np.copy(self.original_damping)
+        damping_scale = np.random.uniform(low=0, high=1, size=damping.shape)
+        damping = damping * damping_scale
 
-    def get_parameters(self):
-        """Get value of mass for each link"""
-        masses = np.array( self.sim.model.body_mass[1:] )
-        return masses
+        # Return as a dictionary for clarity
+        return {
+            "masses": masses,
+            "friction": friction,
+            "damping": damping
+        }
 
-
-    def set_parameters(self, task):
-        """Set each hopper link's mass to a new value"""
-        self.sim.model.body_mass[1:] = task
-
+    def set_parameters(self, params):
+        """Set each hopper link's mass, friction, and damping to new values"""
+        self.sim.model.body_mass[1:] = params["masses"]
+        self.sim.model.geom_friction[:] = params["friction"]
+        self.sim.model.dof_damping[:] = params["damping"]
+    '''
 
     def step(self, a):
         """Step the simulation to the next timestep
