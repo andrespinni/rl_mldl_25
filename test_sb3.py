@@ -33,19 +33,19 @@ def main():
     out_file = open(out_file_path, "w")
 
     # Inizializza ambiente
-    env = gym.make(f'CustomHopper-{mod_test}-v0')
+    env = gym.make(f'HalfCheetah-v3')
 
     # Log iniziale
     print("Action space:", env.action_space)
     print("State space:", env.observation_space)
-    print("Dynamics parameters:", env.get_parameters())
+    #print("Dynamics parameters:", env.get_parameters())
     
     
     out_file.write(f"Model testato con {mod_test}\n")
 
     out_file.write(f"Action space: {env.action_space}\n")
     out_file.write(f"State space: {env.observation_space}\n")
-    out_file.write(f"Dynamics parameters: {env.get_parameters()}\n")
+    #out_file.write(f"Dynamics parameters: {env.get_parameters()}\n")
 
     # Inizializza W&B
     wandb.init(
@@ -57,7 +57,7 @@ def main():
             "episodes": args.episodes,
             "render": args.render,
             "device": args.device,
-            "env": "CustomHopper-target-v0"
+            "env": "HalfCheetah-v3"
         }
     )
 
