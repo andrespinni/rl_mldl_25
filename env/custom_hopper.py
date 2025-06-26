@@ -131,23 +131,26 @@ class CustomHopper(MujocoEnv, utils.EzPickle):
 """
     Registered environments
 """
+
+################ CAMBIATO IL NUMERO DI STEPS ##########################
+
 gym.envs.register(
         id="CustomHopper-v0",
         entry_point="%s:CustomHopper" % __name__,
-        max_episode_steps=500,
+        max_episode_steps=1000,
 )
 
 gym.envs.register(
         id="CustomHopper-source-v0",
         entry_point="%s:CustomHopper" % __name__,
-        max_episode_steps=500,
+        max_episode_steps=1000,
         kwargs={"domain": "source"}
 )
 
 gym.envs.register(
         id="CustomHopper-target-v0",
         entry_point="%s:CustomHopper" % __name__,
-        max_episode_steps=500,
+        max_episode_steps=1000,
         kwargs={"domain": "target"}
 )
 
