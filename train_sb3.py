@@ -40,7 +40,7 @@ def main():
         name=f"{args.name}_{mod_train}",
         entity="andrea-gaudino02-politecnico-di-torino",
         config={
-            "env": "CustomHopper-source-v0",
+            "env": "HalfCheetah-v3",
             "algorithm": "PPO",
             "total_timesteps": args.episodes,
             "eval_freq": 10_000,
@@ -55,8 +55,8 @@ def main():
     
     # Create training and evaluation environments
     # Uno per il training, uno per la valutazione periodica
-    train_env = gym.make(f'CustomHopper-{mod_train}-v0')
-    eval_env = gym.make(f'CustomHopper-{mod_eval}-v0')
+    train_env = gym.make(f'HalfCheetah-v3')
+    eval_env = gym.make(f'HalfCheetah-v3')
 
     # Utile per capire le dimensioni dello stato e dell’azione.
     #get_parameters() è una funzione custom che stampa, ad esempio, le masse dei link
@@ -64,7 +64,7 @@ def main():
 
     print('State space:', train_env.observation_space)  # state-space
     print('Action space:', train_env.action_space)  # action-space
-    print('Dynamics parameters:', train_env.get_parameters())  # masses of each link of the Hopper
+    #print('Dynamics parameters:', train_env.get_parameters())  # masses of each link of the Hopper
     
     
     #log dei dettagli
@@ -75,7 +75,7 @@ def main():
     
     out_file.write(f"Action space: {train_env.action_space}\n")
     out_file.write(f"State space: {train_env.observation_space}\n")
-    out_file.write(f"Dynamic parameters: {train_env.get_parameters()}\n")
+    #out_file.write(f"Dynamic parameters: {train_env.get_parameters()}\n")
     
     out_file.write(f"\nModel trainato con {mod_train}")
     out_file.write(f"Model eval con {mod_eval}\n")
