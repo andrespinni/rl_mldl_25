@@ -105,8 +105,8 @@ class Agent(object):
 
         rewards_scontate = discount_rewards(rewards, self.gamma) # calcolo reward scontate
         
-        #baseline = 50
-        #rewards_scontate = rewards_scontate - baseline **********************************PER LA BASELINE
+        baseline = 20
+        rewards_scontate = rewards_scontate - baseline
         
         
         rewards_scontate_norm = (rewards_scontate-rewards_scontate.mean())/(rewards_scontate.std()+ 1e-8)
