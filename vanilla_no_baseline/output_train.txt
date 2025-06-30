@@ -1,0 +1,33 @@
+Action space: Box([-1. -1. -1.], [1. 1. 1.], (3,), float32)
+State space: Box([-inf -inf -inf -inf -inf -inf -inf -inf -inf -inf -inf], [inf inf inf inf inf inf inf inf inf inf inf], (11,), float64)
+Dynamic parameters: [2.47400421 3.92699082 2.71433605 5.0893801 ]
+Training episode: 10000
+Episode return: 214.11140554775915
+Policy loss: -1.4466137886047363
+Training episode: 20000
+Episode return: 292.4493919592118
+Policy loss: 56.31761169433594
+Training episode: 30000
+Episode return: 444.9775952999879
+Policy loss: -46.4010009765625
+Training episode: 40000
+Episode return: 415.6823101052341
+Policy loss: -18.142623901367188
+Training episode: 50000
+Episode return: 173.5550436104413
+Policy loss: -9.23237419128418
+Training episode: 60000
+Episode return: 191.02310874553265
+Policy loss: 3.9798777103424072
+Training episode: 70000
+Episode return: 248.21703127251752
+Policy loss: 0.6967005729675293
+Training episode: 80000
+Episode return: 203.05442407269638
+Policy loss: -1.812203049659729
+Training episode: 90000
+Episode return: 167.30904010176883
+Policy loss: -12.804219245910645
+Training episode: 100000
+Episode return: 182.3077335757978
+Policy loss: -27.043350219726562
