@@ -59,15 +59,15 @@ class Policy(torch.nn.Module):
             nn.Linear(self.hidden, 256),
             nn.ReLU(),
             nn.Linear(256, action_space)
-        ).double()
+        ).float()
 
         self.critic = nn.Sequential(
             nn.Linear(state_space, self.hidden),
             nn.ReLU(),
             nn.Linear(self.hidden, 256),
             nn.ReLU(),
-            nn.Linear(self.hidden, 1)
-        ).double()
+            nn.Linear(256, 1)
+        ).float()
 
 
     def init_weights(self):
@@ -138,9 +138,9 @@ class Agent(object):
         rewards = torch.stack(self.rewards, dim=0).to(self.train_device).squeeze(-1)
         done = torch.Tensor(self.done).to(self.train_device)
         masks = torch.Tensor(self.masks).to(self.train_device)
+        values = torch.stack(self.values, dim=0).to(self.train_device).squeeze(-1)
 
-        self.states, self.next_states, self.action_log_probs, self.rewards, self.done = [], [], [], [], []
-
+        self.states, self.next_states, self.action_log_probs, self.rewards, self.done, self.values, self.masks = [], [], [], [], [], [], []
         #
         # TASK 2:
         #   - compute discounted returns
@@ -157,23 +157,22 @@ class Agent(object):
         #   - compute gradients and step the optimizer
         #
 
-        next_state = torch.from_numpy(states[-1]).float().to(self.train_device)
+        next_state = states[-1].float().to(self.train_device)
         _, next_value = self.policy(next_state)
         returns = discount_rewards(next_value, rewards, masks)
 
-        log_probs = torch.cat(action_log_probs)
-        returns = torch.cat(returns).detach()
-        values = torch.cat(values)
+        log_probs = action_log_probs
+        returns = torch.stack(returns).detach()
 
         advantage = returns - values
 
-        actor_loss = -(log_probs * advantage.detach()).mean()
-        critic_loss = advantage.pow(2).mean()
+        self.actor_loss = -(log_probs * advantage.detach()).mean()
+        self.critic_loss = advantage.pow(2).mean()
 
         self.optimizerActor.zero_grad()
         self.optimizerCritic.zero_grad()
-        actor_loss.backward()
-        critic_loss.backward()
+        self.actor_loss.backward()
+        self.critic_loss.backward()
         self.optimizerActor.step()
         self.optimizerCritic.step()
 
