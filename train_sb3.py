@@ -114,7 +114,7 @@ def main():
     # Define Weights & Biases callback
     # Salva i modelli e logga automaticamente i grafici su W&B
     wandb_callback = WandbCallback(
-        model_save_path=f"{args.name}/models/",
+        model_save_path=f"{args.name}/models/model_{args.mod_train}",
         verbose=2
     )
 
