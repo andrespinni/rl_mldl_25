@@ -55,7 +55,7 @@ def main():
         name=f"{args.name}_train_{args.mod_train}_test_{mod_test}",
         entity="andrea-gaudino02-politecnico-di-torino",
         config={
-            "model_path": args.model,
+  #          "model_path": args.model,
             "episodes": args.episodes,
             "render": args.render,
             "device": args.device,
