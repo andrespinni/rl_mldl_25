@@ -21,7 +21,7 @@ def parse_args():
     parser.add_argument('--device', default='cpu', type=str, help='network device [cpu, cuda]')
     parser.add_argument('--name', default='hopper-train_noName', type=str, help='Scegliere nome')
     parser.add_argument("--mod_train", default="source",type=str)
-    parser.add_argument("--mod_eval", default="source",type=str)
+    #parser.add_argument("--mod_eval", default="source",type=str)
 
     
     return parser.parse_args()
@@ -29,7 +29,7 @@ def parse_args():
 args = parse_args()
 
 mod_train=args.mod_train
-mod_eval=args.mod_eval
+mod_eval=mod_train
 
 def main():
     # Crea un nuovo run W&B per tenere traccia del training.
@@ -37,7 +37,7 @@ def main():
     
     wandb.init(
         project="PPO",
-        name=f"{args.name}_{mod_train}",
+        name=f"{args.name}_train_{mod_train}",
         entity="andrea-gaudino02-politecnico-di-torino",
         config={
             "env": "CustomHopper-source-v0",
@@ -69,7 +69,7 @@ def main():
     
     #log dei dettagli
     os.makedirs(args.name, exist_ok=True)
-    out_file_name = f"{args.name}/dettagli_train-sb3.txt"
+    out_file_name = f"{args.name}/output_train_{mod_train}.txt"
     out_file = open(out_file_name, "w")
     
     
@@ -103,7 +103,7 @@ def main():
 
     eval_callback = EvalCallback(
         eval_env,
-        best_model_save_path=f"{args.name}/best_model/",
+        best_model_save_path=f"{args.name}/best_model_train_{mod_train}/",
         log_path=f"{args.name}/eval_logs/",
         eval_freq=config.eval_freq,
         n_eval_episodes=config.n_eval_episodes,

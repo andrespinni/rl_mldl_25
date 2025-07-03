@@ -14,12 +14,14 @@ from env.custom_hopper import *
 
 def parse_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--model', type=str, required=True, help='Path to the saved model (.zip)')
+    #parser.add_argument('--model', type=str, required=True, help='Path to the saved model (.zip)')
     parser.add_argument('--episodes', type=int, default=100, help='Number of test episodes')
     parser.add_argument('--render', default=False, action='store_true', help='Render the simulator')
     parser.add_argument('--device', type=str, default='cpu', help='Device to run the model on [cpu, cuda]')
     parser.add_argument('--name', type=str, default='sb3-test', help='Name of the test run')
     parser.add_argument("--mod_test", default="source",type=str)
+    parser.add_argument("--mod_train", required=True,type=str)
+
 
     return parser.parse_args()
 
@@ -29,7 +31,7 @@ def main():
 
     # Output file
     os.makedirs(args.name, exist_ok=True)
-    out_file_path = os.path.join(args.name, f"output_test_{mod_test}.txt")
+    out_file_path = os.path.join(args.name, f"output_train_{args.mod_train}_test_{mod_test}.txt")
     out_file = open(out_file_path, "w")
 
     # Inizializza ambiente
@@ -50,7 +52,7 @@ def main():
     # Inizializza W&B
     wandb.init(
         project="PPO",
-        name=f"{args.name}_test_{mod_test}",
+        name=f"{args.name}_train_{args.mod_train}_test_{mod_test}",
         entity="andrea-gaudino02-politecnico-di-torino",
         config={
             "model_path": args.model,
@@ -62,7 +64,7 @@ def main():
     )
 
     # Carica modello SB3
-    model = PPO.load(args.model, device=args.device)
+    model = PPO.load(f"{args.name}/best_model_train_{args.mod_train}/best_model.zip", device=args.device)
 
 
     for episode in range(1, args.episodes + 1):
