@@ -3,4 +3,4 @@ State space: Box([-inf -inf -inf -inf -inf -inf -inf -inf -inf -inf -inf], [inf 
 Dynamic parameters: [2.47400421 3.92699082 2.71433605 5.0893801 ]
 
 Model trainato con sourceModel eval con source
-Final evaluation mean reward: 1483.92 +/- 263.63
+Final evaluation mean reward: 1419.31 +/- 253.06
