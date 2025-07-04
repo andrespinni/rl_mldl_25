@@ -30,6 +30,9 @@ class Policy(torch.nn.Module):
         self.action_space = action_space
         self.hidden = 128
         self.tanh = torch.nn.Tanh()
+        
+        self.log_std = nn.Parameter(torch.zeros(self.action_space))  # nel __init__
+
 
         # """
         #     Actor network
@@ -98,10 +101,14 @@ class Policy(torch.nn.Module):
         """
         # Actor: ottieni la mean delle azioni
         action_mean = self.actor(x)
+        sigma = torch.exp(self.log_std)  # nel forward
+        distribution = Normal(action_mean, sigma)
+        
         # # Standard deviation (sigma) come parametro appreso
         # sigma = self.sigma_activation(self.sigma)
         # normal_dist = Normal(action_mean, sigma)
-        distribution = Categorical(F.softmax(action_mean, dim=-1))
+        
+        #distribution = Categorical(F.softmax(action_mean, dim=-1))
 
         # Critic: ottieni il valore stimato dallo stato
         value = self.critic(x)
@@ -186,7 +193,9 @@ class Agent(object):
         dist, value = self.policy(x)
 
         if evaluation:  # Return mean
-            return dist.mean, None
+            #return dist.mean, None
+            return dist.mean.detach().cpu().numpy(), None  # azione deterministica
+
 
         else:   # Sample from the distribution
             action = dist.sample()

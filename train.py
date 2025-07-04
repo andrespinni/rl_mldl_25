@@ -122,7 +122,7 @@ def main():
     artifact = wandb.Artifact('model', type='model')
     artifact.add_file(f'{args.name}/model.mdl')
     wandb.log_artifact(artifact)
-
+    
     wandb.finish()
     out_file.close()
 
