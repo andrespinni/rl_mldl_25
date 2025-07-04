@@ -64,9 +64,9 @@ def main():
     )
 
     # Carica modello SB3
-    #model = PPO.load(f"{args.name}/best_model_train_{args.mod_train}/best_model.zip", device=args.device)
+    model = PPO.load(f"{args.name}/best_model_train_{args.mod_train}/best_model.zip", device=args.device)
 
-    model = PPO.load(f"{args.name}/models/model_{args.mod_train}/model", device=args.device)
+    #model = PPO.load(f"{args.name}/models/model_{args.mod_train}/model", device=args.device)
 
     for episode in range(1, args.episodes + 1):
         done = False
