@@ -22,22 +22,20 @@ def parse_args():
     return parser.parse_args()
 
 args = parse_args()
-seeds = [100, 200, 300, 400, 500]
 
-def main(seed):
+def main():
     
     os.makedirs(args.name, exist_ok=True)
-    out_file_name = f"{args.name}/output_test_seed_{seed}.txt"
+    out_file_name = f"{args.name}/output_test.txt"
     out_file = open(out_file_name, "w")  # Corretto: aggiunta modalità "w"
 
     env = gym.make('CustomHopper-source-v0')
     # env = gym.make('CustomHopper-target-v0')
     
-    env.seed(seed)
 
     wandb.init(
-        project="ML_project",
-        name=f"{args.name}_test_seed_{seed}",
+        project="Confronti_progetti",
+        name=f"{args.name}_test",
         entity="andrea-gaudino02-politecnico-di-torino",
         config={
             "env": "CustomHopper-source-v0",
@@ -96,5 +94,4 @@ def main(seed):
     wandb.finish()
 
 if __name__ == '__main__':
-    for seed in seeds:
-        main(seed)
+    main()
