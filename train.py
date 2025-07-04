@@ -24,20 +24,21 @@ def parse_args():
     return parser.parse_args()
 
 args = parse_args()
+seeds = [100, 200, 300, 400, 500]
 
-
-def main():
+def main(seed):
     
     os.makedirs(args.name, exist_ok=True)
-    out_file_name = f"{args.name}/output_train.txt"
+    out_file_name = f"{args.name}/output_train_seed_{seed}.txt"
     out_file = open(out_file_name, "w")
 
     env = gym.make('CustomHopper-source-v0')
     # env = gym.make('CustomHopper-target-v0')
+    env.seed(seed)
 
     wandb.init(
         project="ML_project",
-        name=f"{args.name}_train",
+        name=f"{args.name}_train_seed_{seed}",
         entity="andrea-gaudino02-politecnico-di-torino",
         config={
             "env": "CustomHopper-source-v0",
@@ -99,10 +100,10 @@ def main():
             out_file.write(f"Episode return: {train_reward}\n")
             out_file.write(f"Policy loss: {agent.policy_loss}\n")
 
-    torch.save(agent.policy.state_dict(), f"{args.name}/model.mdl")
+    torch.save(agent.policy.state_dict(), f"{args.name}/model_seed_{seed}.mdl")
 
     artifact = wandb.Artifact('model', type='model')
-    artifact.add_file(f'{args.name}/model.mdl')
+    artifact.add_file(f'{args.name}/model_seed_{seed}.mdl')
     wandb.log_artifact(artifact)
 
     wandb.finish()
@@ -110,4 +111,5 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    for seed in seeds:
+        main(seed)
