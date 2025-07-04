@@ -60,7 +60,7 @@ def main(seed):
     observation_space_dim = env.observation_space.shape[-1]
     action_space_dim = env.action_space.shape[-1]
     
-    model_path = f"{args.name}/model_seed_{seed}.mdl"
+    model_path = f"{args.name}/model.mdl"
 
     policy = Policy(observation_space_dim, action_space_dim)
     policy.load_state_dict(torch.load(model_path), strict=True)
