@@ -14,10 +14,10 @@ import time
 
 def parse_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--model', default=None, type=str, help='Model path')
+    #parser.add_argument('--model', default=None, type=str, help='Model path')
     parser.add_argument('--device', default='cpu', type=str, help='network device [cpu, cuda]')
     parser.add_argument('--render', default=False, action='store_true', help='Render the simulator')
-    parser.add_argument('--episodes', default=1000, type=int, help='Number of test episodes')
+    parser.add_argument('--episodes', default=100, type=int, help='Number of test episodes')
     parser.add_argument('--name', default='hopper-test_noName', type=str, help='Scegliere nome')
     return parser.parse_args()
 
@@ -38,7 +38,7 @@ def main():
         entity="andrea-gaudino02-politecnico-di-torino",
         config={
             "env": "CustomHopper-source-v0",
-            "model_path": args.model,
+            "model_path": f"{args.name}/model.mdl",  
             "device": args.device,
             "episodes": args.episodes
         }
@@ -58,7 +58,7 @@ def main():
     action_space_dim = env.action_space.shape[-1]
 
     policy = Policy(observation_space_dim, action_space_dim)
-    policy.load_state_dict(torch.load(args.model), strict=True)
+    policy.load_state_dict(torch.load(f"{args.name}/model.mdl"), strict=True)
 
     agent = Agent(policy, device=args.device)
 
